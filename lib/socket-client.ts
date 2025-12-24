@@ -24,7 +24,8 @@ export function connectSocket(token: string): Socket {
     return socket;
   }
 
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000', {
+  const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  socket = io(socketUrl, {
     path: '/api/socket',
     auth: {
       token,

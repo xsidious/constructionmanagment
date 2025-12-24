@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 
 export default function LandingPage() {
+  // If user is already logged in, redirect to dashboard
+  // This is handled by middleware, but we keep this as a fallback
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
