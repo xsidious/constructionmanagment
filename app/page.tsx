@@ -60,6 +60,22 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Portfolio Preview Section */}
+      <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 bg-white">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">Our Portfolio</h2>
+          <p className="text-gray-600 text-base sm:text-lg">Showcase of our completed and ongoing projects</p>
+        </div>
+        <div className="text-center">
+          <Link href="/portfolio">
+            <Button size="lg" className="gradient-primary text-white shadow-md">
+              View Portfolio
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
       {/* Features Grid */}
       <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="text-center mb-8 sm:mb-12">

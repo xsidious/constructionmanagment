@@ -36,6 +36,7 @@ import { Logo } from '@/components/ui/logo';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null, clientOnly: false },
   { name: 'Client Portal', href: '/client', icon: Users, permission: null, clientOnly: true },
+  { name: 'Portfolio', href: '/portfolio', icon: Building2, permission: null, clientOnly: false },
   { name: 'Calendar', href: '/calendar', icon: Calendar, permission: null, clientOnly: false },
   { name: 'Projects', href: '/projects', icon: FolderKanban, permission: null, clientOnly: false },
   { name: 'Customers', href: '/customers', icon: Users, permission: null, clientOnly: false },
