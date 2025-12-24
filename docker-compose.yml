@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: construction_management_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: construction_user
+      POSTGRES_PASSWORD: construction_password
+      POSTGRES_DB: construction_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U construction_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - construction_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: construction_management_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://construction_user:construction_password@postgres:5432/construction_management?schema=public
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-dev-secret-change-this-in-production}
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-this-in-production}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-dev-refresh-secret-change-this-in-production}
+      - NODE_ENV=development
+      - MAX_FILE_SIZE=10485760
+      - UPLOAD_DIR=./uploads
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - prisma_client:/app/node_modules/.prisma
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - construction_network
+    command: sh -c "npm install && npx prisma generate && sleep 3 && npx prisma db push --accept-data-loss || true && npm run dev"
+
+volumes:
+  postgres_data:
+  uploads_data:
+  prisma_client:
+
+networks:
+  construction_network:
+    driver: bridge
