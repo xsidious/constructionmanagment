@@ -6,20 +6,33 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting database seed...');
 
-  // Create test user
-  const hashedPassword = await bcrypt.hash('password123', 12);
-  
-  const user = await prisma.user.upsert({
+  // Create admin user
+  const adminPassword = await bcrypt.hash('admin123', 12);
+  const adminUser = await prisma.user.upsert({
     where: { email: 'admin@test.com' },
     update: {},
     create: {
       email: 'admin@test.com',
-      password: hashedPassword,
+      password: adminPassword,
       name: 'Admin User',
     },
   });
 
-  console.log('✅ Created user:', user.email);
+  console.log('✅ Created admin user:', adminUser.email);
+
+  // Create regular user
+  const userPassword = await bcrypt.hash('user123', 12);
+  const regularUser = await prisma.user.upsert({
+    where: { email: 'user@test.com' },
+    update: {},
+    create: {
+      email: 'user@test.com',
+      password: userPassword,
+      name: 'Regular User',
+    },
+  });
+
+  console.log('✅ Created regular user:', regularUser.email);
 
   // Create a company
   const company = await prisma.company.upsert({
@@ -34,23 +47,41 @@ async function main() {
 
   console.log('✅ Created company:', company.name);
 
-  // Create company membership
+  // Create admin membership
   await prisma.companyMembership.upsert({
     where: {
       userId_companyId: {
-        userId: user.id,
+        userId: adminUser.id,
         companyId: company.id,
       },
     },
     update: {},
     create: {
-      userId: user.id,
+      userId: adminUser.id,
       companyId: company.id,
-      role: 'Owner',
+      role: 'Admin',
     },
   });
 
-  console.log('✅ Created company membership');
+  console.log('✅ Created admin membership');
+
+  // Create regular user membership
+  await prisma.companyMembership.upsert({
+    where: {
+      userId_companyId: {
+        userId: regularUser.id,
+        companyId: company.id,
+      },
+    },
+    update: {},
+    create: {
+      userId: regularUser.id,
+      companyId: company.id,
+      role: 'Manager',
+    },
+  });
+
+  console.log('✅ Created regular user membership');
 
   // Create a customer
   const customer = await prisma.customer.create({
@@ -107,7 +138,7 @@ async function main() {
     data: {
       companyId: company.id,
       projectId: project.id,
-      assignedToId: user.id,
+      assignedToId: regularUser.id,
       title: 'Install Foundation',
       description: 'Prepare and pour foundation',
       status: 'InProgress',
@@ -225,7 +256,7 @@ async function main() {
   await prisma.timeEntry.create({
     data: {
       companyId: company.id,
-      userId: user.id,
+      userId: regularUser.id,
       projectId: project.id,
       jobId: job.id,
       date: new Date(),
@@ -234,7 +265,7 @@ async function main() {
       hourlyRate: 50,
       totalAmount: 400,
       status: 'Approved',
-      approvedById: user.id,
+      approvedById: adminUser.id,
       approvedAt: new Date(),
     },
   });
@@ -305,8 +336,14 @@ async function main() {
 
   console.log('\n🎉 Database seed completed successfully!');
   console.log('\n📋 Login Credentials:');
+  console.log('\n🔐 Admin User:');
   console.log('   Email: admin@test.com');
-  console.log('   Password: password123');
+  console.log('   Password: admin123');
+  console.log('   Role: Admin (Full access + Admin features)');
+  console.log('\n👤 Regular User:');
+  console.log('   Email: user@test.com');
+  console.log('   Password: user123');
+  console.log('   Role: Manager (Standard access)');
 }
 
 main()

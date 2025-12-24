@@ -26,7 +26,13 @@ export type Permission =
   | 'material:delete'
   | 'analytics:read'
   | 'chat:read'
-  | 'chat:write';
+  | 'chat:write'
+  | 'admin:access'
+  | 'admin:manage_users'
+  | 'admin:system_settings'
+  | 'admin:view_all_data'
+  | 'admin:export_data'
+  | 'admin:manage_companies';
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   Owner: [
@@ -59,6 +65,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   Admin: [
     'company:read',
     'company:write',
+    'company:delete',
     'company:manage_members',
     'customer:read',
     'customer:write',
@@ -81,6 +88,11 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'analytics:read',
     'chat:read',
     'chat:write',
+    'admin:access',
+    'admin:manage_users',
+    'admin:system_settings',
+    'admin:view_all_data',
+    'admin:export_data',
   ],
   Manager: [
     'company:read',
