@@ -42,11 +42,12 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Sign In</CardTitle>
-        <CardDescription>Enter your credentials to access your account</CardDescription>
-      </CardHeader>
+    <div className="flex min-h-screen items-center justify-center p-4 sm:p-6">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl sm:text-3xl">Sign In</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Enter your credentials to access your account</CardDescription>
+        </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
@@ -89,7 +90,8 @@ export default function LoginPage() {
           </p>
         </CardFooter>
       </form>
-    </Card>
+      </Card>
+    </div>
   );
 }
 
