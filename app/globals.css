@@ -113,5 +113,55 @@
     transform: translateY(-4px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    /* Ensure touch targets are at least 44x44px */
+    button, a, input, select, textarea {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Better text readability on mobile */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Prevent horizontal scroll */
+    * {
+      max-width: 100%;
+    }
+  }
+
+  /* Touch-friendly interactions */
+  @media (hover: none) and (pointer: coarse) {
+    button:hover, a:hover {
+      opacity: 1;
+    }
+    
+    .hover-lift:hover {
+      transform: none;
+    }
+  }
+
+  /* Safe area insets for mobile devices */
+  @supports (padding: max(0px)) {
+    .safe-top {
+      padding-top: max(1rem, env(safe-area-inset-top));
+    }
+    
+    .safe-bottom {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+    
+    .safe-left {
+      padding-left: max(1rem, env(safe-area-inset-left));
+    }
+    
+    .safe-right {
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+  }
 }
 

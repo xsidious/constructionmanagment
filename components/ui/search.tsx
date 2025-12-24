@@ -49,11 +49,12 @@ export function Search() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-sm text-gray-600 hover:text-gray-900"
+        className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-sm text-gray-600 hover:text-gray-900 min-h-[44px]"
+        aria-label="Search"
       >
-        <SearchIcon className="h-4 w-4" />
-        <span className="hidden md:inline">Search...</span>
-        <kbd className="hidden md:inline pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100">
+        <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="hidden sm:inline">Search...</span>
+        <kbd className="hidden lg:inline pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>

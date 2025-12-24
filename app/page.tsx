@@ -21,43 +21,43 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Construction Manager
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
+              <Button variant="ghost" className="text-sm sm:text-base">Sign In</Button>
             </Link>
             <Link href="/register">
-              <Button className="gradient-primary text-white">Get Started</Button>
+              <Button className="gradient-primary text-white text-sm sm:text-base">Get Started</Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
+      <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent px-4">
             Complete Construction Management Solution
           </h1>
-          <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+          <p className="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed px-4">
             Streamline your construction projects with our all-in-one platform. 
             Manage projects, track time, handle invoices, and collaborate with your team—all in one place.
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/register">
-              <Button size="lg" className="gradient-primary text-white text-lg px-8 py-6 hover-lift">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+            <Link href="/register" className="w-full sm:w-auto">
+              <Button size="lg" className="gradient-primary text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 hover-lift w-full sm:w-auto">
                 Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto">
                 Sign In
               </Button>
             </Link>
@@ -66,13 +66,13 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Everything You Need</h2>
-          <p className="text-gray-600 text-lg">Powerful features to manage your construction business</p>
+      <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">Everything You Need</h2>
+          <p className="text-gray-600 text-base sm:text-lg">Powerful features to manage your construction business</p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
               <FolderKanban className="h-6 w-6 text-blue-600" />
