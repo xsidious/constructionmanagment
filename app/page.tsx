@@ -64,7 +64,7 @@ export default function LandingPage() {
       <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 bg-white">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">Our Portfolio</h2>
-          <p className="text-gray-600 text-base sm:text-lg">Showcase of our completed and ongoing projects</p>
+          <p className="text-gray-600 text-base sm:text-lg">Showcase of our completed and ongoing construction projects</p>
         </div>
         <div className="text-center">
           <Link href="/portfolio">

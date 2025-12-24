@@ -8,7 +8,7 @@ export default auth((req) => {
   const isApiAuth = pathname.startsWith('/api/auth');
   const isPublicApi = pathname.startsWith('/api/public') || pathname.startsWith('/api/portfolio/public');
   const isLandingPage = pathname === '/';
-  const isPublicPortfolio = pathname.startsWith('/portfolio') && !pathname.startsWith('/portfolio/');
+  const isPublicPortfolio = pathname === '/portfolio' || pathname.startsWith('/portfolio/');
   
   // Allow auth pages, landing page, public portfolio, and API routes
   if (isAuthPage || isApiAuth || isPublicApi || isLandingPage || isPublicPortfolio) {

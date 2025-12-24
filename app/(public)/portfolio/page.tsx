@@ -297,7 +297,7 @@ export default function PublicPortfolioPage() {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                </div>
               ))}
             </div>
           )}
