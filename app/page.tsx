@@ -11,7 +11,8 @@ import {
   ArrowRight,
   Shield,
   BarChart3,
-  Zap
+  Zap,
+  Building2
 } from 'lucide-react';
 
 export default function LandingPage() {

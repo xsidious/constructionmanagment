@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { Logo } from '@/components/ui/logo';
 import Link from 'next/link';
 
 interface PortfolioProject {
@@ -93,14 +95,6 @@ export default function PortfolioPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   const statusOptions = [
     { value: 'all', label: 'All Projects' },
     { value: 'Completed', label: 'Completed' },
@@ -108,6 +102,14 @@ export default function PortfolioPage() {
   ];
 
   const isAuthenticated = !!session;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -305,7 +307,7 @@ export default function PortfolioPage() {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
+                </Link>
               ))}
             </div>
           )}
