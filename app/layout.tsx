@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider defaultTheme="system" storageKey="construction-ui-theme">
+        <ThemeProvider defaultTheme="light" storageKey="construction-ui-theme">
           <Providers>{children}</Providers>
         </ThemeProvider>
       </body>

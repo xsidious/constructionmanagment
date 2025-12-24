@@ -2,48 +2,67 @@
 
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
-import { Moon, Sun, LogOut } from 'lucide-react';
+import { Moon, Sun, LogOut, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/components/providers/theme-provider';
 import { CompanySwitcher } from './company-switcher';
+import { Search } from '@/components/ui/search';
 
 export function Header() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
-      <div className="flex items-center gap-4">
+    <header className="flex h-16 items-center justify-between border-b bg-white/80 backdrop-blur-lg shadow-sm px-6 sticky top-0 z-50">
+      <div className="flex items-center gap-4 flex-1">
         {session?.companyId && <CompanySwitcher />}
+        <div className="flex-1 max-w-md">
+          <Search />
+        </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="icon"
+          className="relative"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         >
           {theme === 'dark' ? (
-            <Sun className="h-5 w-5" />
+            <Sun className="h-5 w-5 text-yellow-500" />
           ) : (
-            <Moon className="h-5 w-5" />
+            <Moon className="h-5 w-5 text-gray-600" />
           )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative"
+        >
+          <Bell className="h-5 w-5 text-gray-600" />
+          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-semibold shadow-md hover:shadow-lg transition-shadow">
                 {session?.user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => signOut()}>
+          <DropdownMenuContent align="end" className="w-56">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-semibold">{session?.user?.name}</p>
+              <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               Sign out
             </DropdownMenuItem>
