@@ -226,45 +226,38 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="gradient-card shadow-sm border-2 border-gray-100">
-          <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-blue-600" />
-              Jobs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">-</div>
-            <p className="text-xs text-muted-foreground mt-1">Active jobs</p>
-          </CardContent>
-        </Card>
-
-        <Card className="gradient-card shadow-sm border-2 border-gray-100">
-          <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="h-4 w-4 text-purple-600" />
-              Time Tracking
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">-</div>
-            <p className="text-xs text-muted-foreground mt-1">Hours logged this month</p>
-          </CardContent>
-        </Card>
-
-        <Card className="gradient-card shadow-sm border-2 border-gray-100">
-          <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Package className="h-4 w-4 text-pink-600" />
-              Materials
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">-</div>
-            <p className="text-xs text-muted-foreground mt-1">Items in inventory</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Card className="gradient-card shadow-sm border-2 border-gray-100">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Monthly Revenue</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="month" stroke="#6b7280" />
+                    <YAxis stroke="#6b7280" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }} 
+                    />
+                    <Bar dataKey="revenue" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  No revenue data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        <RecentActivity />
       </div>
     </div>
   );

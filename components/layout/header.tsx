@@ -15,6 +15,7 @@ import { useTheme } from '@/components/providers/theme-provider';
 import { CompanySwitcher } from './company-switcher';
 import { Search } from '@/components/ui/search';
 import { MobileSidebar } from './mobile-sidebar';
+import { Logo } from '@/components/ui/logo';
 
 export function Header() {
   const { data: session } = useSession();
@@ -24,6 +25,9 @@ export function Header() {
     <header className="flex h-16 items-center justify-between border-b bg-white/80 backdrop-blur-lg shadow-sm px-3 sm:px-6 sticky top-0 z-50">
       <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
         <MobileSidebar />
+        <div className="hidden md:block">
+          <Logo size="sm" showText={false} />
+        </div>
         {session?.companyId && <CompanySwitcher />}
         <div className="flex-1 max-w-md hidden sm:block">
           <Search />
