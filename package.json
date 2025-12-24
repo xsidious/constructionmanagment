@@ -6,6 +6,7 @@
     "postinstall": "prisma generate",
     "dev": "prisma generate && next dev",
     "build": "prisma generate && next build",
+    "db:seed": "node prisma/seed.js",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",

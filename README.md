@@ -4,6 +4,7 @@ A fully self-hosted, production-ready Construction Management System built with 
 
 ## Features
 
+### Core Features
 - Multi-tenant SaaS architecture with company-level data isolation
 - Role-based access control (Owner, Admin, Manager, Worker, Accountant, Client)
 - Customer and project management
@@ -13,6 +14,14 @@ A fully self-hosted, production-ready Construction Management System built with 
 - Job/work order management
 - Analytics dashboard with charts
 - File storage and management
+
+### Advanced Features
+- **Time Tracking & Timesheets** - Track employee hours, approve timesheets, calculate labor costs
+- **Equipment Management** - Track construction equipment, maintenance schedules, equipment usage
+- **Expense Tracking** - Record project expenses by category, track receipts, expense reporting
+- **Subcontractor Management** - Manage subcontractors, track work orders, monitor subcontractor costs
+- **Comprehensive Reporting** - Generate detailed reports for projects, finances, and operations
+- **Notifications System** - Real-time notifications for important events and updates
 
 ## Tech Stack
 

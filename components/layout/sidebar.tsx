@@ -14,6 +14,10 @@ import {
   Package,
   ShoppingCart,
   MessageSquare,
+  Clock,
+  Wrench,
+  DollarSign,
+  UserCog,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,7 +29,11 @@ const navigation = [
   { name: 'Quotes', href: '/quotes', icon: FileText },
   { name: 'Invoices', href: '/invoices', icon: Receipt },
   { name: 'Jobs', href: '/jobs', icon: Briefcase },
+  { name: 'Time Tracking', href: '/time-tracking', icon: Clock },
   { name: 'Materials', href: '/materials', icon: Package },
+  { name: 'Equipment', href: '/equipment', icon: Wrench },
+  { name: 'Expenses', href: '/expenses', icon: DollarSign },
+  { name: 'Subcontractors', href: '/subcontractors', icon: UserCog },
   { name: 'Purchase Orders', href: '/purchase-orders', icon: ShoppingCart },
 ];
 
