@@ -118,6 +118,8 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'job:write',
     'chat:read',
     'chat:write',
+    // Workers need to log their time
+    'analytics:read', // For viewing their own time entries
   ],
   Accountant: [
     'company:read',
