@@ -222,7 +222,7 @@ export default function PublicPortfolioPage() {
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredProjects.map((project) => (
-                <Link key={project.id} href={`/portfolio/${project.id}`}>
+                <Link key={project.id} href={`/portfolio/${project.id}`} className="block">
                   <Card className="gradient-card border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer">
                     <div className="relative h-48 bg-gradient-to-br from-blue-100 to-indigo-100 overflow-hidden">
                       {project.imageUrl ? (
