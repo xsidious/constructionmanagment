@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Moon, Sun, LogOut, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +21,13 @@ import { Logo } from '@/components/ui/logo';
 export function Header() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white/80 backdrop-blur-lg shadow-sm px-3 sm:px-6 sticky top-0 z-50">
@@ -68,7 +76,7 @@ export function Header() {
               <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/', redirect: true })} className="cursor-pointer">
+            <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               Sign out
             </DropdownMenuItem>
