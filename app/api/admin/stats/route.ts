@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { requireApiContext } from '@/lib/api-helpers';
 import { hasPermission } from '@/lib/permissions';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const context = await requireApiContext();
