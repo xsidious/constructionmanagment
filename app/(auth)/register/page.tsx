@@ -48,7 +48,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl sm:text-3xl">Create Account</CardTitle>
-        <CardDescription>Enter your information to create an account</CardDescription>
+        <CardDescription className="text-sm sm:text-base">Enter your information to create an account</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -107,7 +107,8 @@ export default function RegisterPage() {
           </p>
         </CardFooter>
       </form>
-    </Card>
+      </Card>
+    </div>
   );
 }
 
