@@ -24,6 +24,7 @@ import {
 import { cn } from '@/lib/utils';
 import { hasPermission } from '@/lib/permissions';
 import { Role } from '@prisma/client';
+import { Logo } from '@/components/ui/logo';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
@@ -56,7 +57,7 @@ export function Sidebar() {
   return (
     <div className="flex h-full w-64 flex-col border-r bg-white/80 backdrop-blur-lg shadow-lg hidden md:flex">
       <div className="flex h-16 items-center border-b px-6 bg-gradient-to-r from-blue-600 to-indigo-600">
-        <h1 className="text-xl font-bold text-white">Construction Manager</h1>
+        <Logo size="sm" showText={true} className="text-white" />
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
         {filteredNavigation.map((item) => {
@@ -67,14 +68,14 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 hover-lift',
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium',
                 isActive
                   ? isAdmin
-                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-md shadow-yellow-500/30'
-                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30'
+                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-sm'
+                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm'
                   : isAdmin
-                  ? 'text-gray-700 hover:bg-yellow-50 hover:text-yellow-600'
-                  : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                  ? 'text-gray-700 bg-transparent'
+                  : 'text-gray-700 bg-transparent'
               )}
             >
               <item.icon className={cn('h-5 w-5', isActive ? 'text-white' : isAdmin ? 'text-yellow-600' : 'text-gray-500')} />

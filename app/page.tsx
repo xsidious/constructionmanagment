@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 import { 
-  Building2, 
   Users, 
   FolderKanban, 
   Receipt, 
@@ -22,12 +22,7 @@ export default function LandingPage() {
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Construction Manager
-            </span>
-          </div>
+          <Logo size="md" showText={true} />
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/login">
               <Button variant="ghost" className="text-sm sm:text-base">Sign In</Button>
@@ -51,7 +46,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
             <Link href="/register" className="w-full sm:w-auto">
-              <Button size="lg" className="gradient-primary text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 hover-lift w-full sm:w-auto">
+              <Button size="lg" className="gradient-primary text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto shadow-md">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
@@ -73,7 +68,7 @@ export default function LandingPage() {
         </div>
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
               <FolderKanban className="h-6 w-6 text-blue-600" />
             </div>
@@ -81,7 +76,7 @@ export default function LandingPage() {
             <p className="text-gray-600">Track projects from planning to completion with phases, budgets, and timelines.</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
               <Receipt className="h-6 w-6 text-purple-600" />
             </div>
@@ -89,7 +84,7 @@ export default function LandingPage() {
             <p className="text-gray-600">Generate professional quotes and invoices with PDF export capabilities.</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4">
               <Clock className="h-6 w-6 text-green-600" />
             </div>
@@ -97,7 +92,7 @@ export default function LandingPage() {
             <p className="text-gray-600">Track employee hours, approve timesheets, and calculate labor costs.</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-4">
               <Wrench className="h-6 w-6 text-orange-600" />
             </div>
@@ -105,7 +100,7 @@ export default function LandingPage() {
             <p className="text-gray-600">Track equipment, schedule maintenance, and monitor usage across projects.</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
               <BarChart3 className="h-6 w-6 text-pink-600" />
             </div>
@@ -113,7 +108,7 @@ export default function LandingPage() {
             <p className="text-gray-600">Get insights with comprehensive analytics and detailed reporting.</p>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg hover-lift border border-gray-100">
+          <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-gray-100">
             <div className="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-4">
               <Users className="h-6 w-6 text-indigo-600" />
             </div>

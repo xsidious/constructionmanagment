@@ -53,7 +53,7 @@ export function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-semibold shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-semibold shadow-sm">
                 {session?.user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
             </Button>

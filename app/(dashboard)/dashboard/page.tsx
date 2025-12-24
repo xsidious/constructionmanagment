@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { formatCurrency } from '@/lib/utils';
 import { TrendingUp, TrendingDown, DollarSign, FolderKanban, Receipt, Briefcase, Clock, Package, Wrench, Users } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { QuickActions } from '@/components/dashboard/quick-actions';
+import { RecentActivity } from '@/components/dashboard/recent-activity';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -86,8 +88,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <QuickActions />
+
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="gradient-card hover-lift border-2 border-blue-100 shadow-lg">
+        <Card className="gradient-card border-2 border-blue-100 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <DollarSign className="h-5 w-5 text-blue-600" />
@@ -154,7 +158,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="gradient-card hover-lift shadow-lg">
+        <Card className="gradient-card shadow-sm border-2 border-gray-100">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart className="h-5 w-5 text-blue-600" />
@@ -184,7 +188,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gradient-card hover-lift shadow-lg">
+        <Card className="gradient-card shadow-sm border-2 border-gray-100">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FolderKanban className="h-5 w-5 text-purple-600" />
@@ -223,7 +227,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="gradient-card hover-lift shadow-lg">
+        <Card className="gradient-card shadow-sm border-2 border-gray-100">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Briefcase className="h-4 w-4 text-blue-600" />
@@ -236,7 +240,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gradient-card hover-lift shadow-lg">
+        <Card className="gradient-card shadow-sm border-2 border-gray-100">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Clock className="h-4 w-4 text-purple-600" />
@@ -249,7 +253,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gradient-card hover-lift shadow-lg">
+        <Card className="gradient-card shadow-sm border-2 border-gray-100">
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Package className="h-4 w-4 text-pink-600" />

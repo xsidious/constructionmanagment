@@ -31,6 +31,7 @@ import {
 import { cn } from '@/lib/utils';
 import { hasPermission } from '@/lib/permissions';
 import { Role } from '@prisma/client';
+import { Logo } from '@/components/ui/logo';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
@@ -81,7 +82,7 @@ export function MobileSidebar() {
       <SheetContent side="left" className="w-64 p-0 overflow-y-auto">
         <div className="flex h-full flex-col">
           <div className="flex h-16 items-center border-b px-6 bg-gradient-to-r from-blue-600 to-indigo-600">
-            <h1 className="text-xl font-bold text-white">Menu</h1>
+            <Logo size="sm" showText={true} className="text-white" />
           </div>
           <nav className="flex-1 space-y-1 px-3 py-4">
             {filteredNavigation.map((item) => {
@@ -93,7 +94,7 @@ export function MobileSidebar() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200',
+                    'flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium',
                     isActive
                       ? isAdmin
                         ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-md'

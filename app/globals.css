@@ -79,7 +79,7 @@
   }
   
   .gradient-card {
-    @apply bg-gradient-to-br from-white to-blue-50/50;
+    @apply bg-white border border-gray-100;
   }
   
   .glass-effect {
@@ -105,13 +105,14 @@
     }
   }
   
-  .hover-lift {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Remove hover animations - professional static design */
+  a {
+    transition: none;
   }
   
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  a:hover {
+    transform: none;
+    box-shadow: none;
   }
 
   /* Mobile optimizations */
