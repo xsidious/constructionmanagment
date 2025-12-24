@@ -18,7 +18,11 @@ export default auth((req) => {
   if (pathname.startsWith('/dashboard') || pathname.startsWith('/companies') || 
       pathname.startsWith('/customers') || pathname.startsWith('/projects') ||
       pathname.startsWith('/quotes') || pathname.startsWith('/invoices') ||
-      pathname.startsWith('/jobs') || pathname.startsWith('/materials')) {
+      pathname.startsWith('/jobs') || pathname.startsWith('/materials') ||
+      pathname.startsWith('/time-tracking') || pathname.startsWith('/equipment') ||
+      pathname.startsWith('/expenses') || pathname.startsWith('/subcontractors') ||
+      pathname.startsWith('/purchase-orders') || pathname.startsWith('/calendar') ||
+      pathname.startsWith('/admin')) {
     if (!req.auth) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
