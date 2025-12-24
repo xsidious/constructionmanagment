@@ -7,9 +7,10 @@ export default auth((req) => {
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
   const isApiAuth = pathname.startsWith('/api/auth');
   const isPublicApi = pathname.startsWith('/api/public');
+  const isLandingPage = pathname === '/';
   
-  // Allow auth pages and API routes
-  if (isAuthPage || isApiAuth || isPublicApi) {
+  // Allow auth pages, landing page, and API routes
+  if (isAuthPage || isApiAuth || isPublicApi || isLandingPage) {
     return NextResponse.next();
   }
 
