@@ -31,7 +31,8 @@ interface PortfolioProject {
   imageUrl?: string | null;
 }
 
-export default function PublicPortfolioPage() {
+export default function PortfolioPage() {
+  const { data: session } = useSession();
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<PortfolioProject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +41,7 @@ export default function PublicPortfolioPage() {
 
   useEffect(() => {
     fetchPortfolioProjects();
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     filterProjects();
@@ -48,8 +49,9 @@ export default function PublicPortfolioPage() {
 
   const fetchPortfolioProjects = async () => {
     try {
-      // Public portfolio endpoint - no auth required
-      const response = await fetch('/api/portfolio/public');
+      // Use authenticated endpoint if logged in, otherwise public
+      const endpoint = session ? '/api/portfolio/projects' : '/api/portfolio/public';
+      const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();
         setProjects(data);
@@ -105,33 +107,39 @@ export default function PublicPortfolioPage() {
     { value: 'InProgress', label: 'In Progress' },
   ];
 
+  const isAuthenticated = !!session;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/">
-            <Logo size="md" showText={true} />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
+      {!isAuthenticated && (
+        <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
+          <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <Link href="/">
+              <Logo size="md" showText={true} />
             </Link>
-            <Link href="/register">
-              <Button className="gradient-primary text-white">Get Started</Button>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link href="/login">
+                <Button variant="ghost">Sign In</Button>
+              </Link>
+              <Link href="/register">
+                <Button className="gradient-primary text-white">Get Started</Button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
-      <div className="container mx-auto px-4 sm:px-6 py-12">
+      <div className={`container mx-auto px-4 sm:px-6 ${isAuthenticated ? 'py-6' : 'py-12'}`}>
         <div className="space-y-6">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Project Portfolio
+          <div className={`${isAuthenticated ? '' : 'text-center'} mb-8`}>
+            <h1 className="text-2xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              {isAuthenticated ? 'Portfolio' : 'Project Portfolio'}
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore our completed and ongoing construction projects. See our expertise in action.
+            <p className={`text-muted-foreground ${isAuthenticated ? 'text-sm sm:text-base' : 'text-lg max-w-2xl mx-auto'}`}>
+              {isAuthenticated 
+                ? 'Showcase of your completed and ongoing construction projects'
+                : 'Explore our completed and ongoing construction projects. See our expertise in action.'}
             </p>
           </div>
 

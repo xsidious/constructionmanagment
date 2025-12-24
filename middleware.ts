@@ -8,10 +8,10 @@ export default auth((req) => {
   const isApiAuth = pathname.startsWith('/api/auth');
   const isPublicApi = pathname.startsWith('/api/public') || pathname.startsWith('/api/portfolio/public');
   const isLandingPage = pathname === '/';
-  const isPublicPortfolio = pathname === '/portfolio' || pathname.startsWith('/portfolio/');
+  const isPortfolio = pathname === '/portfolio' || pathname.startsWith('/portfolio/');
   
-  // Allow auth pages, landing page, public portfolio, and API routes
-  if (isAuthPage || isApiAuth || isPublicApi || isLandingPage || isPublicPortfolio) {
+  // Allow auth pages, landing page, portfolio (works for both auth and public), and API routes
+  if (isAuthPage || isApiAuth || isPublicApi || isLandingPage || isPortfolio) {
     return NextResponse.next();
   }
 

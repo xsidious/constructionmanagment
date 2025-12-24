@@ -15,6 +15,7 @@ import {
   User
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Logo } from '@/components/ui/logo';
 
@@ -44,19 +45,24 @@ interface PortfolioProject {
   imageUrl?: string | null;
 }
 
-export default function PublicPortfolioProjectDetail() {
+export default function PortfolioProjectDetail() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const [project, setProject] = useState<PortfolioProject | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProject();
-  }, [params.id]);
+  }, [params.id, session]);
 
   const fetchProject = async () => {
     try {
-      const response = await fetch(`/api/portfolio/public/${params.id}`);
+      // Use authenticated endpoint if logged in, otherwise public
+      const endpoint = session 
+        ? `/api/portfolio/projects/${params.id}`
+        : `/api/portfolio/public/${params.id}`;
+      const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();
         setProject(data);
@@ -114,26 +120,30 @@ export default function PublicPortfolioProjectDetail() {
     }
   };
 
+  const isAuthenticated = !!session;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/">
-            <Logo size="md" showText={true} />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/portfolio">
-              <Button variant="outline" size="icon">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
+      {!isAuthenticated && (
+        <header className="border-b bg-white/80 backdrop-blur-lg sticky top-0 z-50">
+          <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <Link href="/">
+              <Logo size="md" showText={true} />
             </Link>
-            <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link href="/portfolio">
+                <Button variant="outline" size="icon">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="ghost">Sign In</Button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <div className="container mx-auto px-4 sm:px-6 py-12">
         <div className="space-y-6">
