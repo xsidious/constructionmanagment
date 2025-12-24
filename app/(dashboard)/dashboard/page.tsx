@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { TrendingUp, TrendingDown, DollarSign, FolderKanban, Receipt, Briefcase, Clock, Package, Wrench, Users } from 'lucide-react';
@@ -26,12 +28,22 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState<Partial<DashboardStats>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    // Redirect clients to client portal
+    if (session?.role === 'Client') {
+      router.push('/client');
+      return;
+    }
+    
+    if (session) {
+      fetchDashboardData();
+    }
+  }, [session, router]);
 
   const fetchDashboardData = async () => {
     try {
@@ -107,44 +119,32 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gradient-card hover-lift border-2 border-purple-100 shadow-lg">
+        <Card className="gradient-card border-2 border-purple-100 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
             <FolderKanban className="h-5 w-5 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600">
-              {stats.statusCounts?.InProgress || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Total: {stats.totalProjects || 0} projects
-            </p>
+            <div className="text-3xl font-bold text-purple-600">{stats.totalProjects || 0}</div>
+            <p className="text-xs text-muted-foreground mt-2">Active projects</p>
           </CardContent>
         </Card>
 
-        <Card className="gradient-card hover-lift border-2 border-pink-100 shadow-lg">
+        <Card className="gradient-card border-2 border-green-100 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unpaid Invoices</CardTitle>
-            <Receipt className="h-5 w-5 text-pink-600" />
+            <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
+            <Receipt className="h-5 w-5 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-pink-600">
-              {formatCurrency(stats.totalUnpaid || 0)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {stats.totalInvoices || 0} total invoices
-            </p>
+            <div className="text-3xl font-bold text-green-600">{stats.totalInvoices || 0}</div>
+            <p className="text-xs text-muted-foreground mt-2">All invoices</p>
           </CardContent>
         </Card>
 
-        <Card className={`gradient-card hover-lift border-2 shadow-lg ${(stats.profit || 0) >= 0 ? 'border-green-100' : 'border-red-100'}`}>
+        <Card className="gradient-card border-2 border-pink-100 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Profit</CardTitle>
-            {(stats.profit || 0) >= 0 ? (
-              <TrendingUp className="h-5 w-5 text-green-600" />
-            ) : (
-              <TrendingDown className="h-5 w-5 text-red-600" />
-            )}
+            <DollarSign className="h-5 w-5 text-pink-600" />
           </CardHeader>
           <CardContent>
             <div className={`text-3xl font-bold ${(stats.profit || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -170,12 +170,16 @@ export default function DashboardPage() {
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" stroke="#6b7280" />
+                  <YAxis stroke="#6b7280" />
                   <Tooltip 
                     formatter={(value) => formatCurrency(value as number)}
-                    contentStyle={{ backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px'
+                    }} 
                   />
                   <Bar dataKey="revenue" fill="#3b82f6" radius={[8, 8, 0, 0]} />
                 </BarChart>
@@ -214,7 +218,13 @@ export default function DashboardPage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px'
+                    }} 
+                  />
                 </PieChart>
               </ResponsiveContainer>
             ) : (

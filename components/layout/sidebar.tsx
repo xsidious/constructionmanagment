@@ -27,21 +27,22 @@ import { Role } from '@prisma/client';
 import { Logo } from '@/components/ui/logo';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
-  { name: 'Calendar', href: '/calendar', icon: Calendar, permission: null },
-  { name: 'Projects', href: '/projects', icon: FolderKanban, permission: null },
-  { name: 'Customers', href: '/customers', icon: Users, permission: null },
-  { name: 'Jobs', href: '/jobs', icon: Briefcase, permission: null },
-  { name: 'Time Tracking', href: '/time-tracking', icon: Clock, permission: null },
-  { name: 'Quotes', href: '/quotes', icon: FileText, permission: null },
-  { name: 'Invoices', href: '/invoices', icon: Receipt, permission: null },
-  { name: 'Materials', href: '/materials', icon: Package, permission: null },
-  { name: 'Equipment', href: '/equipment', icon: Wrench, permission: null },
-  { name: 'Expenses', href: '/expenses', icon: DollarSign, permission: null },
-  { name: 'Subcontractors', href: '/subcontractors', icon: UserCog, permission: null },
-  { name: 'Purchase Orders', href: '/purchase-orders', icon: ShoppingCart, permission: null },
-  { name: 'Companies', href: '/companies', icon: Building2, permission: null },
-  { name: 'Admin', href: '/admin', icon: Shield, permission: 'admin:access' as const },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null, clientOnly: false },
+  { name: 'Client Portal', href: '/client', icon: Users, permission: null, clientOnly: true },
+  { name: 'Calendar', href: '/calendar', icon: Calendar, permission: null, clientOnly: false },
+  { name: 'Projects', href: '/projects', icon: FolderKanban, permission: null, clientOnly: false },
+  { name: 'Customers', href: '/customers', icon: Users, permission: null, clientOnly: false },
+  { name: 'Jobs', href: '/jobs', icon: Briefcase, permission: null, clientOnly: false },
+  { name: 'Time Tracking', href: '/time-tracking', icon: Clock, permission: null, clientOnly: false },
+  { name: 'Quotes', href: '/quotes', icon: FileText, permission: null, clientOnly: false },
+  { name: 'Invoices', href: '/invoices', icon: Receipt, permission: null, clientOnly: false },
+  { name: 'Materials', href: '/materials', icon: Package, permission: null, clientOnly: false },
+  { name: 'Equipment', href: '/equipment', icon: Wrench, permission: null, clientOnly: false },
+  { name: 'Expenses', href: '/expenses', icon: DollarSign, permission: null, clientOnly: false },
+  { name: 'Subcontractors', href: '/subcontractors', icon: UserCog, permission: null, clientOnly: false },
+  { name: 'Purchase Orders', href: '/purchase-orders', icon: ShoppingCart, permission: null, clientOnly: false },
+  { name: 'Companies', href: '/companies', icon: Building2, permission: null, clientOnly: false },
+  { name: 'Admin', href: '/admin', icon: Shield, permission: 'admin:access' as const, clientOnly: false },
 ];
 
 export function Sidebar() {
@@ -49,9 +50,28 @@ export function Sidebar() {
   const { data: session } = useSession();
   
   const filteredNavigation = navigation.filter(item => {
-    if (!item.permission) return true;
-    if (!session?.role) return false;
-    return hasPermission(session.role as Role, item.permission);
+    // Show client-only items only for clients
+    if (item.clientOnly) {
+      return session?.role === 'Client';
+    }
+    
+    // Hide client-only items from non-clients
+    if (session?.role !== 'Client' && item.clientOnly) {
+      return false;
+    }
+    
+    // Hide non-client items from clients
+    if (session?.role === 'Client' && !item.clientOnly && item.name !== 'Client Portal') {
+      return false;
+    }
+    
+    // Permission check
+    if (item.permission) {
+      if (!session?.role) return false;
+      return hasPermission(session.role as Role, item.permission);
+    }
+    
+    return true;
   });
 
   return (
