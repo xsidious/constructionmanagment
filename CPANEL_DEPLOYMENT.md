@@ -15,7 +15,18 @@ This guide will help you deploy your Next.js application to cPanel hosting with 
 2. Look for "Node.js" or "Node.js Selector" in the cPanel interface
 3. If available, note the Node.js version (you'll need Node.js 18+ for Next.js 14)
 
-**If Node.js is NOT available:**
+**⚠️ CRITICAL: Node.js Version Requirement**
+- **Next.js 14 requires Node.js 18.0.0 or higher**
+- If your cPanel only offers Node.js 16.x or lower, **the application will NOT work**
+- **Solutions**: See `NODEJS_VERSION_SOLUTIONS.md` for detailed options
+
+**If Node.js 18+ is NOT available:**
+1. **Contact your hosting provider** to add Node.js 18.x or 20.x
+2. **Use alternative hosting** (Vercel, Railway, Render) - see `NODEJS_VERSION_SOLUTIONS.md`
+3. **Consider VPS** with manual Node.js installation
+4. **Not recommended**: Downgrade Next.js to version 13 (loses features)
+
+**If Node.js is NOT available at all:**
 - Contact your hosting provider to enable Node.js support
 - Consider using a VPS or cloud hosting that supports Node.js
 - Alternative: Use a static export (limited functionality)

@@ -11,7 +11,10 @@ When creating your Node.js application in cPanel, use these settings:
 
 ### 1. Node.js Version
 - **Select**: `18.x` or `20.x` (recommended: `20.x` if available)
-- Next.js 14 requires Node.js 18 or higher
+- **⚠️ CRITICAL**: Next.js 14 requires Node.js 18.0.0 or higher
+- **If only Node.js 16.x is available**: You have two options:
+  1. **Contact your hosting provider** to upgrade Node.js to version 18+
+  2. **Use alternative hosting** (see solutions below)
 
 ### 2. Application Mode
 - **Select**: `Production`
@@ -95,6 +98,71 @@ MAX_FILE_SIZE=10485760
 2. Verify all files are uploaded to `constructionnode` folder
 3. Ensure `.env.local` file exists (or environment variables are set in Node.js Selector)
 4. Check application logs in Node.js Selector for any errors
+
+## ⚠️ IMPORTANT: Node.js Version Issue
+
+### Problem: Only Node.js 16.20.2 Available
+
+If your cPanel only offers Node.js 16.20.2, **Next.js 14 will NOT work** because it requires Node.js 18+.
+
+### Solutions:
+
+#### Option 1: Request Node.js Upgrade (Recommended)
+1. **Contact your hosting provider** support
+2. Request Node.js 18.x or 20.x to be added to cPanel
+3. Many providers can add newer versions upon request
+4. This is the best solution if you want to stay on cPanel
+
+#### Option 2: Use Alternative Hosting
+Since cPanel Node.js support is limited, consider these alternatives:
+
+**Best Options for Next.js:**
+- **Vercel** (Free tier available, easiest for Next.js)
+- **Railway** (Easy deployment, good pricing)
+- **Render** (Free tier available)
+- **Netlify** (Good for Next.js)
+- **DigitalOcean App Platform** (Simple deployment)
+
+**Why these are better:**
+- Automatic Node.js 18+ support
+- Built-in CI/CD
+- Easy environment variable management
+- Better performance
+- Automatic SSL
+
+#### Option 3: Downgrade Next.js (Not Recommended)
+You could downgrade to Next.js 13, but you'll lose features and it's not recommended.
+
+**Steps if downgrading:**
+```bash
+npm install next@13 react@18 react-dom@18
+```
+
+**Limitations:**
+- Missing Next.js 14 features
+- May have compatibility issues
+- Not a long-term solution
+
+#### Option 4: Use VPS with cPanel Alternative
+- Get a VPS (DigitalOcean, Linode, etc.)
+- Install Node.js 20 manually
+- Use PM2 for process management
+- More control but requires server management
+
+### Recommended Action
+
+**If you can't get Node.js 18+ on cPanel:**
+1. **Deploy to Vercel** (easiest, free tier)
+   - Connect your GitHub repo
+   - Automatic deployments
+   - Free SSL
+   - Node.js 20 by default
+
+2. **Or use Railway/Render** for similar ease
+
+3. **Keep cPanel for database only** if needed
+   - Use cPanel PostgreSQL
+   - Connect from Vercel/Railway using external database URL
 
 ## Troubleshooting
 
