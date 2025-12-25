@@ -18,9 +18,8 @@ Create a `.env.local` file in your project root with these contents:
 DATABASE_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
 DIRECT_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
 
-# NextAuth - Generate a secure secret
-# Run: openssl rand -base64 32
-AUTH_SECRET="PASTE_YOUR_GENERATED_SECRET_HERE"
+# NextAuth - Secure secret (already generated)
+AUTH_SECRET="XtnLfABPQ9Jf9lAt6+3mfj9Gz1Hk8jehykFdBEV0Ixs="
 NEXTAUTH_URL="https://yourdomain.com"
 
 # Node Environment
