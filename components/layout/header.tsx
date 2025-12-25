@@ -34,9 +34,6 @@ export function Header() {
       <div className="flex h-16 items-center justify-between px-3 sm:px-6">
         <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
           <MobileSidebar />
-          <div className="hidden md:block">
-            <Logo size="sm" showText={true} />
-          </div>
           {session?.companyId && <CompanySwitcher />}
           <div className="flex-1 max-w-md hidden sm:block">
             <Search />
