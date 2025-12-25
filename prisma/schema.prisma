@@ -97,6 +97,7 @@ model User {
   assignedJobs        Job[]               @relation("AssignedJobs")
   chatMessages        ChatMessage[]
   uploadedFiles       File[]
+  projectNotes        ProjectNote[]
   timeEntries         TimeEntry[]         @relation("TimeEntries")
   approvedTimeEntries TimeEntry[]         @relation("ApprovedTimeEntries")
   notifications       Notification[]
@@ -195,6 +196,7 @@ model Project {
   equipmentUsages   EquipmentUsage[]
   expenses          Expense[]
   subcontractorWork SubcontractorWork[]
+  notes             ProjectNote[]
 
   @@index([companyId])
   @@index([customerId])
@@ -468,23 +470,27 @@ model ChatMessage {
 }
 
 model File {
-  id           String   @id @default(cuid())
-  companyId    String
-  projectId    String?
-  uploadedById String
-  filename     String
-  originalName String
-  mimeType     String
-  size         Int
-  path         String
-  createdAt    DateTime @default(now())
+  id              String   @id @default(cuid())
+  companyId       String
+  projectId       String?
+  subcontractorId String?
+  uploadedById    String
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  path            String
+  fileType        String? // 'blueprint', 'contract', 'document', 'other'
+  createdAt       DateTime @default(now())
 
-  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  project    Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  uploadedBy User     @relation(fields: [uploadedById], references: [id])
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  project       Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  subcontractor Subcontractor? @relation(fields: [subcontractorId], references: [id], onDelete: Cascade)
+  uploadedBy    User           @relation(fields: [uploadedById], references: [id])
 
   @@index([companyId])
   @@index([projectId])
+  @@index([subcontractorId])
   @@index([uploadedById])
 }
 
@@ -650,6 +656,7 @@ model Subcontractor {
 
   company    Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   workOrders SubcontractorWork[]
+  files      File[]
 
   @@index([companyId])
 }
@@ -676,6 +683,23 @@ model SubcontractorWork {
   @@index([subcontractorId])
   @@index([projectId])
   @@index([jobId])
+}
+
+model ProjectNote {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  title     String?
+  content   String
+  type      String   @default("note") // 'note', 'change', 'update'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([projectId])
+  @@index([userId])
 }
 
 enum NotificationType {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -229,7 +230,11 @@ export default function SubcontractorsPage() {
               ) : (
                 subcontractors.map((sub) => (
                   <TableRow key={sub.id}>
-                    <TableCell className="font-medium">{sub.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link href={`/subcontractors/${sub.id}`} className="hover:underline">
+                        {sub.name}
+                      </Link>
+                    </TableCell>
                     <TableCell>
                       <div className="text-sm">
                         {sub.email && <div>{sub.email}</div>}

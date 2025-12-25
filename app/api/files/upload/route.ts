@@ -10,6 +10,8 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const projectId = formData.get('projectId') as string | null;
+    const subcontractorId = formData.get('subcontractorId') as string | null;
+    const fileType = formData.get('fileType') as string | null;
 
     if (!file) {
       return apiError('No file provided', 400);
@@ -30,6 +32,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Verify subcontractor if provided
+    if (subcontractorId) {
+      const { prisma } = await import('@/lib/prisma');
+      const subcontractor = await prisma.subcontractor.findFirst({
+        where: {
+          id: subcontractorId,
+          companyId: session.companyId,
+        },
+      });
+
+      if (!subcontractor) {
+        return apiError('Subcontractor not found', 404);
+      }
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileUpload = {
       filename: file.name.replace(/[^a-zA-Z0-9.-]/g, '_'),
@@ -44,7 +61,9 @@ export async function POST(req: NextRequest) {
       fileUpload,
       session.companyId,
       projectId,
-      session.userId
+      session.userId,
+      subcontractorId,
+      fileType
     );
 
     return apiSuccess(result, 201);

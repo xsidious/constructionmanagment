@@ -41,12 +41,19 @@ export async function saveFile(
   file: FileUpload,
   companyId: string,
   projectId: string | null,
-  uploadedById: string
+  uploadedById: string,
+  subcontractorId?: string | null,
+  fileType?: string | null
 ): Promise<{ id: string; path: string }> {
   // Create directory structure
-  const dirPath = projectId
-    ? path.join(UPLOAD_DIR, companyId, projectId)
-    : path.join(UPLOAD_DIR, companyId);
+  let dirPath: string;
+  if (projectId) {
+    dirPath = path.join(UPLOAD_DIR, companyId, 'projects', projectId);
+  } else if (subcontractorId) {
+    dirPath = path.join(UPLOAD_DIR, companyId, 'subcontractors', subcontractorId);
+  } else {
+    dirPath = path.join(UPLOAD_DIR, companyId);
+  }
 
   await fs.mkdir(dirPath, { recursive: true });
 
@@ -64,12 +71,14 @@ export async function saveFile(
     data: {
       companyId,
       projectId,
+      subcontractorId,
       uploadedById,
       filename,
       originalName: file.originalName,
       mimeType: file.mimeType,
       size: file.size,
       path: filePath,
+      fileType,
     },
   });
 

@@ -82,14 +82,12 @@ export async function GET(
           },
         },
         files: {
-          include: {
-            uploadedBy: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
+          select: {
+            id: true,
+            originalName: true,
+            size: true,
+            fileType: true,
+            createdAt: true,
           },
         },
       },

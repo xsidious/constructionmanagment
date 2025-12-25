@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Edit, Plus, FileText, Briefcase, Package, MessageSquare, Upload } from 'lucide-react';
+import { ProjectNotesTab } from '@/components/projects/project-notes-tab';
+import { ProjectFilesTab } from '@/components/projects/project-files-tab';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { ChatRoom } from '@/components/chat/chat-room';
 
@@ -26,7 +28,7 @@ interface Project {
   quotes: Array<{ id: string; quoteNumber: string; status: string; total: number }>;
   invoices: Array<{ id: string; invoiceNumber: string; status: string; total: number }>;
   materialUsages: Array<{ id: string; quantity: number; unitPrice: number; material: { name: string } }>;
-  files: Array<{ id: string; originalName: string; size: number; createdAt: string }>;
+  files: Array<{ id: string; originalName: string; size: number; fileType?: string; createdAt: string }>;
 }
 
 export default function ProjectDetailPage() {
@@ -167,6 +169,7 @@ export default function ProjectDetailPage() {
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="quotes">Quotes</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="notes">Notes</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
           <TabsTrigger value="chat">Chat</TabsTrigger>
         </TabsList>
@@ -343,48 +346,12 @@ export default function ProjectDetailPage() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="notes" className="space-y-4">
+          <ProjectNotesTab projectId={project.id} />
+        </TabsContent>
+
         <TabsContent value="files" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Files</CardTitle>
-                <Button size="sm">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {project.files.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No files yet</p>
-              ) : (
-                <div className="space-y-2">
-                  {project.files.map((file) => (
-                    <div key={file.id} className="flex items-center justify-between p-3 rounded border">
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <div className="font-medium">{file.originalName}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {(file.size / 1024).toFixed(2)} KB • {formatDate(file.createdAt)}
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          window.open(`/api/files/${file.id}`, '_blank');
-                        }}
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <ProjectFilesTab projectId={project.id} files={project.files} onFileUpload={fetchProject} />
         </TabsContent>
 
         <TabsContent value="chat" className="space-y-4">
