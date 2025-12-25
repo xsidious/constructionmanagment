@@ -110,7 +110,7 @@ Ensure your `package.json` has these scripts:
 2. Navigate to **File Manager**
 3. Go to `public_html/constructionnode` (your project location)
    - If the folder doesn't exist, create it: `public_html/constructionnode`
-4. Upload all project files to this directory EXCEPT:
+5. Upload all project files EXCEPT:
    - `node_modules/` (don't upload, will install on server)
    - `.next/` (will be generated)
    - `.env.local` (create on server)
@@ -189,9 +189,12 @@ openssl rand -base64 32
 3. Configure:
    - **Node.js version**: 18.x or 20.x
    - **Application mode**: Production
-   - **Application root**: `/home/username/construction-app`
-   - **Application URL**: Your domain/subdomain
-   - **Application startup file**: `server.js` (create this)
+   - **Application root**: `/home/YOUR_USERNAME/public_html/constructionnode`
+     - Replace `YOUR_USERNAME` with your cPanel username
+     - Example: `/home/eraba/public_html/constructionnode`
+   - **Application URL**: Your primary domain (e.g., `https://yourdomain.com`)
+     - Do NOT include `/constructionnode` in the URL
+   - **Application startup file**: `server.js` (already exists in project)
    - **Application port**: Auto-assigned
 4. In **Application startup file**, create `server.js`:
 
