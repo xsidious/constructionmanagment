@@ -5,7 +5,9 @@ import { z } from 'zod';
 import { QuoteStatus } from '@prisma/client';
 
 const createQuoteSchema = z.object({
-  customerId: z.string(),
+  customerName: z.string().optional(),
+  customerId: z.string().optional(),
+  clientAddress: z.string().optional(),
   projectId: z.string().optional(),
   status: z.nativeEnum(QuoteStatus).default(QuoteStatus.Draft),
   validUntil: z.string().datetime().optional(),
@@ -75,23 +77,68 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = createQuoteSchema.parse(body);
 
-    // Verify customer belongs to company
-    const customer = await prisma.customer.findFirst({
-      where: {
-        id: data.customerId,
-        companyId: session.companyId,
-      },
-    });
-
-    if (!customer) {
-      return apiError('Customer not found', 404);
+    // Find or create customer
+    let customer;
+    if (data.customerId) {
+      customer = await prisma.customer.findFirst({
+        where: {
+          id: data.customerId,
+          companyId: session.companyId,
+        },
+      });
+      if (!customer) {
+        return apiError('Customer not found', 404);
+      }
+    } else if (data.customerName) {
+      // Find or create customer by name
+      customer = await prisma.customer.findFirst({
+        where: {
+          name: data.customerName,
+          companyId: session.companyId,
+        },
+      });
+      
+      if (!customer) {
+        // Create new customer
+        customer = await prisma.customer.create({
+          data: {
+            name: data.customerName,
+            companyId: session.companyId,
+          },
+        });
+      }
+    } else {
+      return apiError('Customer name or ID is required', 400);
     }
 
-    // Verify project if provided
-    if (data.projectId) {
+    // Handle client address - create/find project if address provided
+    let projectId = data.projectId;
+    if (data.clientAddress && !projectId) {
+      // Find or create a project with the address as name
+      let project = await prisma.project.findFirst({
+        where: {
+          name: data.clientAddress,
+          customerId: customer.id,
+          companyId: session.companyId,
+        },
+      });
+      
+      if (!project) {
+        project = await prisma.project.create({
+          data: {
+            name: data.clientAddress,
+            customerId: customer.id,
+            companyId: session.companyId,
+            status: 'Planning',
+          },
+        });
+      }
+      projectId = project.id;
+    } else if (projectId) {
+      // Verify project if provided
       const project = await prisma.project.findFirst({
         where: {
-          id: data.projectId,
+          id: projectId,
           companyId: session.companyId,
         },
       });

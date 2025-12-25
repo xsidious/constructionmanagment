@@ -35,8 +35,6 @@ interface LineItem {
 
 export default function NewQuotePage() {
   const router = useRouter();
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [customerId, setCustomerId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [status, setStatus] = useState('Draft');
@@ -49,24 +47,6 @@ export default function NewQuotePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetch('/api/customers')
-      .then((res) => res.json())
-      .then((data) => setCustomers(data))
-      .catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    if (customerId) {
-      fetch(`/api/projects?customerId=${customerId}`)
-        .then((res) => res.json())
-        .then((data) => setProjects(data))
-        .catch(console.error);
-    } else {
-      setProjects([]);
-      setProjectId('');
-    }
-  }, [customerId]);
 
   const addLineItem = () => {
     setLineItems([...lineItems, { type: 'Labor', description: '', quantity: 1, unitPrice: 0 }]);
@@ -110,8 +90,8 @@ export default function NewQuotePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerId,
-          projectId: projectId && projectId !== 'none' ? projectId : undefined,
+          customerName: customerId,
+          clientAddress: projectId || undefined,
           status,
           validUntil: validUntil || undefined,
           tax: parseFloat(tax || '0'),
@@ -164,36 +144,26 @@ export default function NewQuotePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="customerId">Customer *</Label>
-                <Select value={customerId} onValueChange={setCustomerId} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a customer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {customers.map((customer) => (
-                      <SelectItem key={customer.id} value={customer.id}>
-                        {customer.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="customerName">Customer Name *</Label>
+                <Input
+                  id="customerName"
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  placeholder="Enter customer name"
+                  required
+                  disabled={loading}
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="projectId">Project</Label>
-                <Select value={projectId || 'none'} onValueChange={(value) => setProjectId(value === 'none' ? '' : value)} disabled={!customerId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a project (optional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {projects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="clientAddress">Client Address</Label>
+                <Input
+                  id="clientAddress"
+                  value={projectId}
+                  onChange={(e) => setProjectId(e.target.value)}
+                  placeholder="Enter client address (optional)"
+                  disabled={loading}
+                />
               </div>
 
               <div className="space-y-2">
