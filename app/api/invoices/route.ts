@@ -168,8 +168,8 @@ export async function POST(req: NextRequest) {
     const invoice = await prisma.invoice.create({
       data: {
         companyId: session.companyId,
-        customerId: data.customerId,
-        projectId: data.projectId || null,
+        customerId: customer.id,
+        projectId: projectId || null,
         quoteId: data.quoteId || null,
         invoiceNumber,
         status: data.status,

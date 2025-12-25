@@ -166,8 +166,8 @@ export async function POST(req: NextRequest) {
     const quote = await prisma.quote.create({
       data: {
         companyId: session.companyId,
-        customerId: data.customerId,
-        projectId: data.projectId || null,
+        customerId: customer.id,
+        projectId: projectId || null,
         quoteNumber,
         status: data.status,
         subtotal,
