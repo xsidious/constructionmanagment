@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, FileText, Download } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { NewQuoteDialog } from '@/components/dialogs/new-quote-dialog';
 
 interface Quote {
   id: string;
@@ -23,6 +24,7 @@ interface Quote {
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchQuotes();
@@ -64,11 +66,9 @@ export default function QuotesPage() {
           <h1 className="text-3xl font-bold">Quotes</h1>
           <p className="text-muted-foreground">Manage your quotes and estimates</p>
         </div>
-        <Button asChild>
-          <Link href="/quotes/new">
-            <Plus className="mr-2 h-4 w-4" />
-            New Quote
-          </Link>
+        <Button onClick={() => setDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Quote
         </Button>
       </div>
 
@@ -77,11 +77,9 @@ export default function QuotesPage() {
           <CardContent className="py-10 text-center">
             <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
             <p className="mt-4 text-muted-foreground">No quotes yet</p>
-            <Button asChild className="mt-4">
-              <Link href="/quotes/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Quote
-              </Link>
+            <Button onClick={() => setDialogOpen(true)} className="mt-4">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Quote
             </Button>
           </CardContent>
         </Card>
@@ -132,6 +130,13 @@ export default function QuotesPage() {
           </Table>
         </Card>
       )}
+      <NewQuoteDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        onSuccess={() => {
+          fetchQuotes();
+        }}
+      />
     </div>
   );
 }
