@@ -4,6 +4,8 @@ import { requireApiContext, apiError, apiSuccess, requireApiPermission } from '@
 import { z } from 'zod';
 import { QuoteStatus } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 const createQuoteSchema = z.object({
   customerName: z.string().optional(),
   customerId: z.string().optional(),

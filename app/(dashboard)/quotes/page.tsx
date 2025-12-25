@@ -35,7 +35,9 @@ export default function QuotesPage() {
       const response = await fetch('/api/quotes');
       if (response.ok) {
         const data = await response.json();
-        setQuotes(data);
+        // Handle both array and wrapped response
+        const quotesData = Array.isArray(data) ? data : (data.data || data);
+        setQuotes(quotesData || []);
       }
     } catch (error) {
       console.error('Failed to fetch quotes:', error);

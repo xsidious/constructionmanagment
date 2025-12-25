@@ -4,6 +4,8 @@ import { requireApiContext, apiError, apiSuccess, requireApiPermission } from '@
 import { z } from 'zod';
 import { InvoiceStatus } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 const createInvoiceSchema = z.object({
   customerName: z.string().optional(),
   customerId: z.string().optional(),
@@ -11,7 +13,7 @@ const createInvoiceSchema = z.object({
   projectId: z.string().optional(),
   quoteId: z.string().optional(),
   status: z.nativeEnum(InvoiceStatus).default(InvoiceStatus.Draft),
-  dueDate: z.string().datetime().optional(),
+  dueDate: z.string().optional(),
   lineItems: z.array(z.object({
     type: z.enum(['Labor', 'Material']),
     description: z.string(),

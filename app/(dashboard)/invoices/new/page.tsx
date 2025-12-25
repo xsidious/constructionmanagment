@@ -56,29 +56,62 @@ export default function NewInvoicePage() {
   useEffect(() => {
     // Fetch all quotes for selection
     fetch('/api/quotes')
-      .then((res) => res.json())
-      .then((data) => setQuotes(data))
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error('Failed to fetch quotes');
+      })
+      .then((data) => {
+        // Handle both array and wrapped response
+        const quotesData = Array.isArray(data) ? data : (data.data || data);
+        setQuotes(quotesData || []);
+      })
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    if (quoteId) {
+    if (quoteId && quoteId !== 'none') {
       fetch(`/api/quotes/${quoteId}`)
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error('Failed to fetch quote');
+        })
         .then((data) => {
-          if (data.lineItems) {
-            setLineItems(data.lineItems.map((item: any) => ({
+          // Handle both direct and wrapped response
+          const quoteData = data.data || data;
+          if (quoteData.lineItems) {
+            setLineItems(quoteData.lineItems.map((item: any) => ({
               type: item.type,
               description: item.description,
               quantity: Number(item.quantity),
               unitPrice: Number(item.unitPrice),
             })));
           }
-          setTax(String(data.tax || 0));
-          setDiscount(String(data.discount || 0));
-          if (data.projectId) setProjectId(data.projectId);
+          // Convert Decimal to number if needed
+          const taxValue = typeof quoteData.tax === 'object' && quoteData.tax?.toNumber 
+            ? quoteData.tax.toNumber() 
+            : Number(quoteData.tax || 0);
+          const discountValue = typeof quoteData.discount === 'object' && quoteData.discount?.toNumber 
+            ? quoteData.discount.toNumber() 
+            : Number(quoteData.discount || 0);
+          setTax(String(taxValue));
+          setDiscount(String(discountValue));
+          // Populate customer name and client address from quote
+          if (quoteData.customer?.name) {
+            setCustomerId(quoteData.customer.name);
+          }
+          if (quoteData.project?.name) {
+            setProjectId(quoteData.project.name);
+          }
         })
         .catch(console.error);
+    } else {
+      // Reset fields when quote is cleared
+      setCustomerId('');
+      setProjectId('');
     }
   }, [quoteId]);
 

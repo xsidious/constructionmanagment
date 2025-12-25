@@ -16,16 +16,6 @@ import {
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 
-interface Customer {
-  id: string;
-  name: string;
-}
-
-interface Project {
-  id: string;
-  name: string;
-}
-
 interface LineItem {
   type: 'Labor' | 'Material';
   description: string;

@@ -4,9 +4,11 @@ import { requireApiContext, apiError, apiSuccess, requireApiPermission } from '@
 import { z } from 'zod';
 import { QuoteStatus } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 const updateQuoteSchema = z.object({
   status: z.nativeEnum(QuoteStatus).optional(),
-  validUntil: z.string().datetime().optional(),
+  validUntil: z.string().optional(),
   lineItems: z.array(z.object({
     type: z.enum(['Labor', 'Material']),
     description: z.string(),
