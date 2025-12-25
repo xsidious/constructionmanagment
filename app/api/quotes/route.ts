@@ -12,7 +12,7 @@ const createQuoteSchema = z.object({
   clientAddress: z.string().optional(),
   projectId: z.string().optional(),
   status: z.nativeEnum(QuoteStatus).default(QuoteStatus.Draft),
-  validUntil: z.string().datetime().optional(),
+  validUntil: z.string().optional(),
   lineItems: z.array(z.object({
     type: z.enum(['Labor', 'Material']),
     description: z.string(),
