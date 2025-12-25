@@ -10,7 +10,7 @@ const updateJobSchema = z.object({
   description: z.string().optional(),
   status: z.nativeEnum(JobStatus).optional(),
   priority: z.nativeEnum(JobPriority).optional(),
-  dueDate: z.string().datetime().optional(),
+  dueDate: z.string().optional(),
 });
 
 export async function GET(

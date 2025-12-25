@@ -11,7 +11,7 @@ const createJobSchema = z.object({
   description: z.string().optional(),
   status: z.nativeEnum(JobStatus).default(JobStatus.Pending),
   priority: z.nativeEnum(JobPriority).default(JobPriority.Medium),
-  dueDate: z.string().datetime().optional(),
+  dueDate: z.string().optional(),
 });
 
 export async function GET(req: NextRequest) {
