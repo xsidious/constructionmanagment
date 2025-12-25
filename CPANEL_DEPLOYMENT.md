@@ -108,9 +108,9 @@ Ensure your `package.json` has these scripts:
 
 1. Log into cPanel
 2. Navigate to **File Manager**
-3. Go to your domain's root directory (usually `public_html` or `subdomain_name`)
-4. Create a folder for your app (e.g., `construction-app`)
-5. Upload all project files EXCEPT:
+3. Go to `public_html/constructionnode` (your project location)
+   - If the folder doesn't exist, create it: `public_html/constructionnode`
+4. Upload all project files to this directory EXCEPT:
    - `node_modules/` (don't upload, will install on server)
    - `.next/` (will be generated)
    - `.env.local` (create on server)

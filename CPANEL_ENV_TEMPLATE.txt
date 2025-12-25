@@ -1,0 +1,20 @@
+# Copy this content to create .env.local in your cPanel
+# Location: public_html/constructionnode/.env.local
+
+# Database Connection
+DATABASE_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
+DIRECT_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
+
+# NextAuth Configuration
+AUTH_SECRET="XtnLfABPQ9Jf9lAt6+3mfj9Gz1Hk8jehykFdBEV0Ixs="
+# IMPORTANT: Replace with your actual primary domain
+# Example: https://yourdomain.com or https://www.yourdomain.com
+NEXTAUTH_URL="https://yourdomain.com"
+
+# Node Environment
+NODE_ENV="production"
+
+# File Upload Configuration
+UPLOAD_DIR="./uploads"
+MAX_FILE_SIZE="10485760"
+
