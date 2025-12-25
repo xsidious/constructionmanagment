@@ -15,16 +15,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-interface Customer {
-  id: string;
-  name: string;
-}
-
 export default function NewProjectPage() {
   const router = useRouter();
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [customerId, setCustomerId] = useState('');
-  const [name, setName] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [clientAddress, setClientAddress] = useState('');
   const [description, setDescription] = useState('');
   const [budget, setBudget] = useState('');
   const [status, setStatus] = useState('Planning');
@@ -33,12 +27,6 @@ export default function NewProjectPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetch('/api/customers')
-      .then((res) => res.json())
-      .then((data) => setCustomers(data))
-      .catch(console.error);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +38,8 @@ export default function NewProjectPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerId,
-          name,
+          customerName,
+          name: clientAddress,
           description: description || undefined,
           budget: budget ? parseFloat(budget) : undefined,
           status,
@@ -95,26 +83,23 @@ export default function NewProjectPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="customerId">Customer *</Label>
-              <Select value={customerId} onValueChange={setCustomerId} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a customer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {customers.map((customer) => (
-                    <SelectItem key={customer.id} value={customer.id}>
-                      {customer.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="customerName">Customer Name *</Label>
+              <Input
+                id="customerName"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Enter customer name"
+                required
+                disabled={loading}
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Project Name *</Label>
+              <Label htmlFor="clientAddress">Client Address *</Label>
               <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="clientAddress"
+                value={clientAddress}
+                onChange={(e) => setClientAddress(e.target.value)}
+                placeholder="Enter client address"
                 required
                 disabled={loading}
               />

@@ -58,13 +58,13 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Invoices</h1>
-          <p className="text-muted-foreground">Manage your invoices</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Invoices</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Manage your invoices</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/invoices/new">
             <Plus className="mr-2 h-4 w-4" />
             New Invoice
@@ -86,51 +86,54 @@ export default function InvoicesPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Invoice Number</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.id}>
-                  <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
-                  <TableCell>{invoice.customer.name}</TableCell>
-                  <TableCell>
-                    <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(invoice.status)}`}>
-                      {invoice.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>{formatCurrency(invoice.total)}</TableCell>
-                  <TableCell>{formatDate(invoice.createdAt)}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/invoices/${invoice.id}`}>View</Link>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          window.open(`/api/invoices/${invoice.id}/pdf`, '_blank');
-                        }}
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+        <div className="overflow-x-auto">
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[120px]">Invoice #</TableHead>
+                  <TableHead className="min-w-[120px]">Customer</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[100px]">Total</TableHead>
+                  <TableHead className="min-w-[100px] hidden sm:table-cell">Created</TableHead>
+                  <TableHead className="min-w-[120px]">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => (
+                  <TableRow key={invoice.id}>
+                    <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
+                    <TableCell>{invoice.customer.name}</TableCell>
+                    <TableCell>
+                      <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(invoice.status)}`}>
+                        {invoice.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>{formatCurrency(invoice.total)}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{formatDate(invoice.createdAt)}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" asChild className="h-8 px-2 sm:px-3">
+                          <Link href={`/invoices/${invoice.id}`} className="text-xs sm:text-sm">View</Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => {
+                            window.open(`/api/invoices/${invoice.id}/pdf`, '_blank');
+                          }}
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
       )}
     </div>
   );

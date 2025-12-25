@@ -63,7 +63,15 @@ export default function ExpensesPage() {
 
       if (expensesRes.ok) {
         const data = await expensesRes.json();
-        setExpenses(data);
+        // Handle both array and wrapped response, and convert Decimal amounts
+        const expensesData = Array.isArray(data) ? data : (data.data || data);
+        const convertedExpenses = (expensesData || []).map((expense: any) => ({
+          ...expense,
+          amount: typeof expense.amount === 'object' && expense.amount?.toNumber 
+            ? expense.amount.toNumber() 
+            : Number(expense.amount || 0),
+        }));
+        setExpenses(convertedExpenses);
       }
 
       if (projectsRes.ok) {
@@ -107,9 +115,13 @@ export default function ExpensesPage() {
     }
   };
 
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const totalExpenses = expenses.reduce((sum, expense) => {
+    const amount = typeof expense.amount === 'number' ? expense.amount : Number(expense.amount) || 0;
+    return sum + amount;
+  }, 0);
   const categoryTotals = expenses.reduce((acc, expense) => {
-    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    const amount = typeof expense.amount === 'number' ? expense.amount : Number(expense.amount) || 0;
+    acc[expense.category] = (acc[expense.category] || 0) + amount;
     return acc;
   }, {} as Record<string, number>);
 
@@ -118,15 +130,15 @@ export default function ExpensesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Expense Tracking</h1>
-          <p className="text-muted-foreground">Track project expenses and receipts</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Expense Tracking</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Track project expenses and receipts</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Expense
             </Button>
@@ -228,7 +240,7 @@ export default function ExpensesPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader>
             <CardTitle>Total Expenses</CardTitle>
@@ -257,38 +269,40 @@ export default function ExpensesPage() {
           <CardDescription>All recorded expenses</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {expenses.length === 0 ? (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
-                    No expenses found
-                  </TableCell>
+                  <TableHead className="min-w-[100px]">Date</TableHead>
+                  <TableHead className="min-w-[100px]">Category</TableHead>
+                  <TableHead className="min-w-[150px] hidden md:table-cell">Description</TableHead>
+                  <TableHead className="min-w-[120px] hidden lg:table-cell">Project</TableHead>
+                  <TableHead className="min-w-[100px] hidden sm:table-cell">Vendor</TableHead>
+                  <TableHead className="min-w-[100px]">Amount</TableHead>
                 </TableRow>
-              ) : (
-                expenses.map((expense) => (
-                  <TableRow key={expense.id}>
-                    <TableCell>{formatDate(expense.date)}</TableCell>
-                    <TableCell>{expense.category}</TableCell>
-                    <TableCell>{expense.description}</TableCell>
-                    <TableCell>{expense.project?.name || '-'}</TableCell>
-                    <TableCell>{expense.vendor || '-'}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(expense.amount)}</TableCell>
+              </TableHeader>
+              <TableBody>
+                {expenses.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                      No expenses found
+                    </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  expenses.map((expense) => (
+                    <TableRow key={expense.id}>
+                      <TableCell className="text-sm">{formatDate(expense.date)}</TableCell>
+                      <TableCell className="text-sm">{expense.category}</TableCell>
+                      <TableCell className="text-sm hidden md:table-cell">{expense.description}</TableCell>
+                      <TableCell className="text-sm hidden lg:table-cell">{expense.project?.name || '-'}</TableCell>
+                      <TableCell className="text-sm hidden sm:table-cell">{expense.vendor || '-'}</TableCell>
+                      <TableCell className="font-medium text-sm">{formatCurrency(expense.amount)}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

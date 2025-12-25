@@ -73,13 +73,13 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Jobs</h1>
-          <p className="text-muted-foreground">Manage work orders and tasks</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Jobs</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Manage work orders and tasks</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
+        <Button onClick={() => setDialogOpen(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           New Job
         </Button>
@@ -97,46 +97,48 @@ export default function JobsPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Assigned To</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {jobs.map((job) => (
-                <TableRow key={job.id}>
-                  <TableCell className="font-medium">{job.title}</TableCell>
-                  <TableCell>{job.project.name}</TableCell>
-                  <TableCell>{job.assignedTo?.name || 'Unassigned'}</TableCell>
-                  <TableCell>
-                    <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(job.status)}`}>
-                      {job.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className={`rounded-full px-2 py-1 text-xs ${getPriorityColor(job.priority)}`}>
-                      {job.priority}
-                    </span>
-                  </TableCell>
-                  <TableCell>{job.dueDate ? formatDate(job.dueDate) : '-'}</TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/jobs/${job.id}`}>View</Link>
-                    </Button>
-                  </TableCell>
+        <div className="overflow-x-auto">
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[150px]">Title</TableHead>
+                  <TableHead className="min-w-[120px] hidden md:table-cell">Project</TableHead>
+                  <TableHead className="min-w-[120px] hidden lg:table-cell">Assigned To</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[100px] hidden sm:table-cell">Priority</TableHead>
+                  <TableHead className="min-w-[100px] hidden md:table-cell">Due Date</TableHead>
+                  <TableHead className="min-w-[80px]">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableHeader>
+              <TableBody>
+                {jobs.map((job) => (
+                  <TableRow key={job.id}>
+                    <TableCell className="font-medium text-sm">{job.title}</TableCell>
+                    <TableCell className="text-sm hidden md:table-cell">{job.project.name}</TableCell>
+                    <TableCell className="text-sm hidden lg:table-cell">{job.assignedTo?.name || 'Unassigned'}</TableCell>
+                    <TableCell>
+                      <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(job.status)}`}>
+                        {job.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <span className={`rounded-full px-2 py-1 text-xs ${getPriorityColor(job.priority)}`}>
+                        {job.priority}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm hidden md:table-cell">{job.dueDate ? formatDate(job.dueDate) : '-'}</TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" asChild className="h-8 px-2 sm:px-3">
+                        <Link href={`/jobs/${job.id}`} className="text-xs sm:text-sm">View</Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
           </Table>
         </Card>
+        </div>
       )}
       <NewJobDialog 
         open={dialogOpen} 

@@ -22,19 +22,19 @@ export function Logo({ className, size = 'md', showText = true }: LogoProps) {
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg blur-sm opacity-50"></div>
-        <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-lg p-1.5">
-          <Building2 className={cn(sizeClasses[size], 'text-white')} />
-        </div>
-      </div>
-      {showText && (
+      {showText ? (
         <span className={cn(
-          'font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent',
+          'font-bold text-blue-600',
           textSizeClasses[size]
         )}>
           BuildPro
         </span>
+      ) : (
+        <div className="relative">
+          <div className="relative bg-blue-600 rounded-lg p-1.5">
+            <Building2 className={cn(sizeClasses[size], 'text-white')} />
+          </div>
+        </div>
       )}
     </div>
   );

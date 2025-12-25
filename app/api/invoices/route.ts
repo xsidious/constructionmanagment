@@ -40,31 +40,49 @@ export async function GET(req: NextRequest) {
 
     if (customerId) where.customerId = customerId;
     if (projectId) where.projectId = projectId;
-    if (status) where.status = status;
+        if (status) where.status = status;
 
-    const invoices = await prisma.invoice.findMany({
-      where,
-      include: {
-        customer: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+        const invoices = await prisma.invoice.findMany({
+          where,
+          include: {
+            customer: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            project: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            payments: true,
+            lineItems: true,
           },
-        },
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        payments: true,
-        lineItems: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+          orderBy: { createdAt: 'desc' },
+        });
 
-    return apiSuccess(invoices);
+        // Convert Decimal fields to numbers for JSON serialization
+        const invoicesData = invoices.map(invoice => ({
+          ...invoice,
+          subtotal: typeof invoice.subtotal === 'object' && invoice.subtotal?.toNumber ? invoice.subtotal.toNumber() : Number(invoice.subtotal),
+          tax: typeof invoice.tax === 'object' && invoice.tax?.toNumber ? invoice.tax.toNumber() : Number(invoice.tax),
+          discount: typeof invoice.discount === 'object' && invoice.discount?.toNumber ? invoice.discount.toNumber() : Number(invoice.discount),
+          total: typeof invoice.total === 'object' && invoice.total?.toNumber ? invoice.total.toNumber() : Number(invoice.total),
+          lineItems: invoice.lineItems.map(item => ({
+            ...item,
+            unitPrice: typeof item.unitPrice === 'object' && item.unitPrice?.toNumber ? item.unitPrice.toNumber() : Number(item.unitPrice),
+            total: typeof item.total === 'object' && item.total?.toNumber ? item.total.toNumber() : Number(item.total),
+          })),
+          payments: invoice.payments.map(payment => ({
+            ...payment,
+            amount: typeof payment.amount === 'object' && payment.amount?.toNumber ? payment.amount.toNumber() : Number(payment.amount),
+          })),
+        }));
+
+        return apiSuccess(invoicesData);
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return apiError('Unauthorized', 401);
@@ -197,7 +215,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return apiSuccess(invoice, 201);
+    // Convert Decimal fields to numbers for JSON serialization
+    const invoiceData = {
+      ...invoice,
+      subtotal: typeof invoice.subtotal === 'object' && invoice.subtotal?.toNumber ? invoice.subtotal.toNumber() : Number(invoice.subtotal),
+      tax: typeof invoice.tax === 'object' && invoice.tax?.toNumber ? invoice.tax.toNumber() : Number(invoice.tax),
+      discount: typeof invoice.discount === 'object' && invoice.discount?.toNumber ? invoice.discount.toNumber() : Number(invoice.discount),
+      total: typeof invoice.total === 'object' && invoice.total?.toNumber ? invoice.total.toNumber() : Number(invoice.total),
+      lineItems: invoice.lineItems.map(item => ({
+        ...item,
+        unitPrice: typeof item.unitPrice === 'object' && item.unitPrice?.toNumber ? item.unitPrice.toNumber() : Number(item.unitPrice),
+        total: typeof item.total === 'object' && item.total?.toNumber ? item.total.toNumber() : Number(item.total),
+      })),
+    };
+
+    return apiSuccess(invoiceData, 201);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return apiError('Invalid input', 400);

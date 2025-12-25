@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { requireApiContext } from '@/lib/api-helpers';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const updateSchema = z.object({
   status: z.enum(['Pending', 'Approved', 'Rejected']).optional(),
   hours: z.number().positive().optional(),

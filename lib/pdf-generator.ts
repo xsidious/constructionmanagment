@@ -75,14 +75,22 @@ export async function generateQuotePDF(quoteId: string, companyId: string): Prom
     doc.text('Total', 450, currentY);
     currentY += itemHeight;
 
+    // Helper function to convert Decimal to number
+    const toNumber = (value: any): number => {
+      if (typeof value === 'number') return value;
+      if (value && typeof value.toNumber === 'function') return value.toNumber();
+      if (value && typeof value.toString === 'function') return parseFloat(value.toString());
+      return 0;
+    };
+
     // Table rows
     doc.font('Helvetica');
     quote.lineItems.forEach((item) => {
       doc.text(item.description.substring(0, 30), 50, currentY);
       doc.text(item.type, 250, currentY);
       doc.text(item.quantity.toString(), 320, currentY);
-      doc.text(formatCurrency(item.unitPrice.toNumber(), quote.company.currency), 370, currentY);
-      doc.text(formatCurrency(item.total.toNumber(), quote.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(item.unitPrice), quote.company.currency), 370, currentY);
+      doc.text(formatCurrency(toNumber(item.total), quote.company.currency), 450, currentY);
       currentY += itemHeight;
     });
 
@@ -90,24 +98,24 @@ export async function generateQuotePDF(quoteId: string, companyId: string): Prom
     currentY += 10;
     doc.font('Helvetica-Bold');
     doc.text('Subtotal:', 350, currentY);
-    doc.text(formatCurrency(quote.subtotal.toNumber(), quote.company.currency), 450, currentY);
+    doc.text(formatCurrency(toNumber(quote.subtotal), quote.company.currency), 450, currentY);
     currentY += itemHeight;
 
-    if (quote.discount.toNumber() > 0) {
+    if (toNumber(quote.discount) > 0) {
       doc.text('Discount:', 350, currentY);
-      doc.text(formatCurrency(quote.discount.toNumber(), quote.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(quote.discount), quote.company.currency), 450, currentY);
       currentY += itemHeight;
     }
 
-    if (quote.tax.toNumber() > 0) {
+    if (toNumber(quote.tax) > 0) {
       doc.text('Tax:', 350, currentY);
-      doc.text(formatCurrency(quote.tax.toNumber(), quote.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(quote.tax), quote.company.currency), 450, currentY);
       currentY += itemHeight;
     }
 
     doc.fontSize(12);
     doc.text('Total:', 350, currentY);
-    doc.text(formatCurrency(quote.total.toNumber(), quote.company.currency), 450, currentY);
+    doc.text(formatCurrency(toNumber(quote.total), quote.company.currency), 450, currentY);
 
     doc.end();
   });
@@ -187,14 +195,22 @@ export async function generateInvoicePDF(invoiceId: string, companyId: string): 
     doc.text('Total', 450, currentY);
     currentY += itemHeight;
 
+    // Helper function to convert Decimal to number
+    const toNumber = (value: any): number => {
+      if (typeof value === 'number') return value;
+      if (value && typeof value.toNumber === 'function') return value.toNumber();
+      if (value && typeof value.toString === 'function') return parseFloat(value.toString());
+      return 0;
+    };
+
     // Table rows
     doc.font('Helvetica');
     invoice.lineItems.forEach((item) => {
       doc.text(item.description.substring(0, 30), 50, currentY);
       doc.text(item.type, 250, currentY);
       doc.text(item.quantity.toString(), 320, currentY);
-      doc.text(formatCurrency(item.unitPrice.toNumber(), invoice.company.currency), 370, currentY);
-      doc.text(formatCurrency(item.total.toNumber(), invoice.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(item.unitPrice), invoice.company.currency), 370, currentY);
+      doc.text(formatCurrency(toNumber(item.total), invoice.company.currency), 450, currentY);
       currentY += itemHeight;
     });
 
@@ -202,24 +218,24 @@ export async function generateInvoicePDF(invoiceId: string, companyId: string): 
     currentY += 10;
     doc.font('Helvetica-Bold');
     doc.text('Subtotal:', 350, currentY);
-    doc.text(formatCurrency(invoice.subtotal.toNumber(), invoice.company.currency), 450, currentY);
+    doc.text(formatCurrency(toNumber(invoice.subtotal), invoice.company.currency), 450, currentY);
     currentY += itemHeight;
 
-    if (invoice.discount.toNumber() > 0) {
+    if (toNumber(invoice.discount) > 0) {
       doc.text('Discount:', 350, currentY);
-      doc.text(formatCurrency(invoice.discount.toNumber(), invoice.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(invoice.discount), invoice.company.currency), 450, currentY);
       currentY += itemHeight;
     }
 
-    if (invoice.tax.toNumber() > 0) {
+    if (toNumber(invoice.tax) > 0) {
       doc.text('Tax:', 350, currentY);
-      doc.text(formatCurrency(invoice.tax.toNumber(), invoice.company.currency), 450, currentY);
+      doc.text(formatCurrency(toNumber(invoice.tax), invoice.company.currency), 450, currentY);
       currentY += itemHeight;
     }
 
     doc.fontSize(12);
     doc.text('Total:', 350, currentY);
-    doc.text(formatCurrency(invoice.total.toNumber(), invoice.company.currency), 450, currentY);
+    doc.text(formatCurrency(toNumber(invoice.total), invoice.company.currency), 450, currentY);
     currentY += itemHeight;
 
     // Payments
@@ -231,7 +247,7 @@ export async function generateInvoicePDF(invoiceId: string, companyId: string): 
       doc.font('Helvetica');
       invoice.payments.forEach((payment) => {
         doc.text(
-          `${formatDate(payment.paidAt)} - ${payment.method} - ${formatCurrency(payment.amount.toNumber(), invoice.company.currency)}`,
+          `${formatDate(payment.paidAt)} - ${payment.method} - ${formatCurrency(toNumber(payment.amount), invoice.company.currency)}`,
           50,
           currentY
         );

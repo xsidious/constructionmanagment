@@ -47,7 +47,25 @@ export async function GET(
       return apiError('Invoice not found', 404);
     }
 
-    return apiSuccess(invoice);
+    // Convert Decimal fields to numbers for JSON serialization
+    const invoiceData = {
+      ...invoice,
+      subtotal: typeof invoice.subtotal === 'object' && invoice.subtotal?.toNumber ? invoice.subtotal.toNumber() : Number(invoice.subtotal),
+      tax: typeof invoice.tax === 'object' && invoice.tax?.toNumber ? invoice.tax.toNumber() : Number(invoice.tax),
+      discount: typeof invoice.discount === 'object' && invoice.discount?.toNumber ? invoice.discount.toNumber() : Number(invoice.discount),
+      total: typeof invoice.total === 'object' && invoice.total?.toNumber ? invoice.total.toNumber() : Number(invoice.total),
+      lineItems: invoice.lineItems.map(item => ({
+        ...item,
+        unitPrice: typeof item.unitPrice === 'object' && item.unitPrice?.toNumber ? item.unitPrice.toNumber() : Number(item.unitPrice),
+        total: typeof item.total === 'object' && item.total?.toNumber ? item.total.toNumber() : Number(item.total),
+      })),
+      payments: invoice.payments.map(payment => ({
+        ...payment,
+        amount: typeof payment.amount === 'object' && payment.amount?.toNumber ? payment.amount.toNumber() : Number(payment.amount),
+      })),
+    };
+
+    return apiSuccess(invoiceData);
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return apiError('Unauthorized', 401);
@@ -147,7 +165,25 @@ export async function PATCH(
       },
     });
 
-    return apiSuccess(updated);
+    // Convert Decimal fields to numbers for JSON serialization
+    const invoiceData = {
+      ...updated,
+      subtotal: typeof updated.subtotal === 'object' && updated.subtotal?.toNumber ? updated.subtotal.toNumber() : Number(updated.subtotal),
+      tax: typeof updated.tax === 'object' && updated.tax?.toNumber ? updated.tax.toNumber() : Number(updated.tax),
+      discount: typeof updated.discount === 'object' && updated.discount?.toNumber ? updated.discount.toNumber() : Number(updated.discount),
+      total: typeof updated.total === 'object' && updated.total?.toNumber ? updated.total.toNumber() : Number(updated.total),
+      lineItems: updated.lineItems.map(item => ({
+        ...item,
+        unitPrice: typeof item.unitPrice === 'object' && item.unitPrice?.toNumber ? item.unitPrice.toNumber() : Number(item.unitPrice),
+        total: typeof item.total === 'object' && item.total?.toNumber ? item.total.toNumber() : Number(item.total),
+      })),
+      payments: updated.payments.map(payment => ({
+        ...payment,
+        amount: typeof payment.amount === 'object' && payment.amount?.toNumber ? payment.amount.toNumber() : Number(payment.amount),
+      })),
+    };
+
+    return apiSuccess(invoiceData);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return apiError('Invalid input', 400);

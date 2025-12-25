@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { requireApiContext } from '@/lib/api-helpers';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const timeEntrySchema = z.object({
   projectId: z.string().optional(),
   jobId: z.string().optional(),
@@ -60,12 +62,12 @@ export async function POST(req: NextRequest) {
       data: {
         companyId: context.companyId,
         userId: context.userId,
-        projectId: data.projectId,
-        jobId: data.jobId,
+        projectId: data.projectId || null,
+        jobId: data.jobId || null,
         date: new Date(data.date),
         hours: data.hours,
-        description: data.description,
-        hourlyRate: data.hourlyRate,
+        description: data.description || null,
+        hourlyRate: data.hourlyRate || null,
         totalAmount: data.hourlyRate ? data.hours * data.hourlyRate : null,
       },
       include: {

@@ -59,13 +59,13 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Projects</h1>
-          <p className="text-muted-foreground">Manage your construction projects</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Projects</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Manage your construction projects</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/projects/new">
             <Plus className="mr-2 h-4 w-4" />
             New Project
@@ -87,54 +87,56 @@ export default function ProjectsPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Progress</TableHead>
-                <TableHead>Budget</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {projects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">{project.name}</TableCell>
-                  <TableCell>{project.customer.name}</TableCell>
-                  <TableCell>
-                    <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(project.status)}`}>
-                      {project.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-24 rounded-full bg-muted">
-                        <div
-                          className="h-2 rounded-full bg-primary"
-                          style={{ width: `${project.progress}%` }}
-                        />
-                      </div>
-                      <span className="text-sm">{project.progress}%</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {project.budget ? formatCurrency(project.budget) : '-'}
-                  </TableCell>
-                  <TableCell>{formatDate(project.createdAt)}</TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/projects/${project.id}`}>View</Link>
-                    </Button>
-                  </TableCell>
+        <div className="overflow-x-auto">
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[150px]">Name</TableHead>
+                  <TableHead className="min-w-[120px]">Customer</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[120px]">Progress</TableHead>
+                  <TableHead className="min-w-[100px] hidden md:table-cell">Budget</TableHead>
+                  <TableHead className="min-w-[100px] hidden sm:table-cell">Created</TableHead>
+                  <TableHead className="min-w-[80px]">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+              </TableHeader>
+              <TableBody>
+                {projects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">{project.name}</TableCell>
+                    <TableCell>{project.customer.name}</TableCell>
+                    <TableCell>
+                      <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(project.status)}`}>
+                        {project.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-16 sm:w-24 rounded-full bg-muted">
+                          <div
+                            className="h-2 rounded-full bg-primary"
+                            style={{ width: `${project.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-xs sm:text-sm">{project.progress}%</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {project.budget ? formatCurrency(project.budget) : '-'}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">{formatDate(project.createdAt)}</TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" asChild className="h-8 px-2 sm:px-3">
+                        <Link href={`/projects/${project.id}`} className="text-xs sm:text-sm">View</Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
       )}
     </div>
   );

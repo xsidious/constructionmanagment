@@ -77,8 +77,8 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full w-64 flex-col border-r bg-white/80 backdrop-blur-lg shadow-lg hidden md:flex">
-      <div className="flex h-16 items-center border-b px-6 bg-gradient-to-r from-blue-600 to-indigo-600">
-        <Logo size="sm" showText={true} className="text-white" />
+      <div className="flex h-16 items-center border-b px-6 bg-white">
+        <Logo size="sm" showText={true} />
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
         {filteredNavigation.map((item) => {

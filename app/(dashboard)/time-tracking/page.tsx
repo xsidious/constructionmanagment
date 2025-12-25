@@ -49,6 +49,8 @@ export default function TimeTrackingPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     projectId: '',
     jobId: '',
@@ -71,12 +73,16 @@ export default function TimeTrackingPage() {
 
       if (entriesRes.ok) {
         const data = await entriesRes.json();
-        setEntries(data);
+        // Handle both array and wrapped response
+        const entriesData = Array.isArray(data) ? data : (data.data || data);
+        setEntries(entriesData || []);
       }
 
       if (projectsRes.ok) {
         const data = await projectsRes.json();
-        setProjects(data);
+        // Handle both array and wrapped response
+        const projectsData = Array.isArray(data) ? data : (data.data || data);
+        setProjects(projectsData || []);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -87,53 +93,85 @@ export default function TimeTrackingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
+    // Validate hours
+    const hoursNum = parseFloat(formData.hours);
+    if (!formData.hours || isNaN(hoursNum) || hoursNum <= 0) {
+      setError('Please enter a valid number of hours');
+      return;
+    }
+
+    setSubmitting(true);
     try {
       const response = await fetch('/api/time-entries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          hours: parseFloat(formData.hours),
+          projectId: formData.projectId && formData.projectId !== 'none' ? formData.projectId : undefined,
+          jobId: formData.jobId && formData.jobId !== 'none' ? formData.jobId : undefined,
+          date: formData.date,
+          hours: hoursNum,
+          description: formData.description || undefined,
           hourlyRate: formData.hourlyRate ? parseFloat(formData.hourlyRate) : undefined,
         }),
       });
 
-      if (response.ok) {
-        setOpen(false);
-        setFormData({
-          projectId: '',
-          jobId: '',
-          date: new Date().toISOString().split('T')[0],
-          hours: '',
-          description: '',
-          hourlyRate: '',
-        });
-        fetchData();
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to create time entry');
+        if (data.details) {
+          console.error('Validation errors:', data.details);
+        }
+        return;
       }
+
+      // Success - reset form and close dialog
+      setOpen(false);
+      setError('');
+      setFormData({
+        projectId: '',
+        jobId: '',
+        date: new Date().toISOString().split('T')[0],
+        hours: '',
+        description: '',
+        hourlyRate: '',
+      });
+      fetchData();
     } catch (error) {
       console.error('Failed to create time entry:', error);
+      setError('An error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const totalHours = entries.reduce((sum, entry) => sum + entry.hours, 0);
+  const totalHours = entries.reduce((sum, entry) => {
+    const hours = typeof entry.hours === 'number' ? entry.hours : Number(entry.hours) || 0;
+    return sum + hours;
+  }, 0);
   const totalAmount = entries
     .filter((e) => e.status === 'Approved')
-    .reduce((sum, entry) => sum + (entry.totalAmount || 0), 0);
+    .reduce((sum, entry) => {
+      const amount = typeof entry.totalAmount === 'number' ? entry.totalAmount : Number(entry.totalAmount) || 0;
+      return sum + amount;
+    }, 0);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Time Tracking</h1>
-          <p className="text-muted-foreground">Track employee hours and timesheets</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Time Tracking</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">Track employee hours and timesheets</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Log Time
             </Button>
@@ -145,16 +183,22 @@ export default function TimeTrackingPage() {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
+                {error && (
+                  <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+                    {error}
+                  </div>
+                )}
                 <div>
-                  <Label htmlFor="projectId">Project</Label>
+                  <Label htmlFor="projectId">Project (optional)</Label>
                   <Select
-                    value={formData.projectId}
-                    onValueChange={(value) => setFormData({ ...formData, projectId: value })}
+                    value={formData.projectId || 'none'}
+                    onValueChange={(value) => setFormData({ ...formData, projectId: value === 'none' ? '' : value })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select project" />
+                      <SelectValue placeholder="Select project (optional)" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
                       {projects.map((project) => (
                         <SelectItem key={project.id} value={project.id}>
                           {project.name}
@@ -206,17 +250,27 @@ export default function TimeTrackingPage() {
                 </div>
               </div>
               <DialogFooter className="mt-4">
-                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => {
+                    setOpen(false);
+                    setError('');
+                  }}
+                  disabled={submitting}
+                >
                   Cancel
                 </Button>
-                <Button type="submit">Log Time</Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? 'Logging...' : 'Log Time'}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Total Hours</CardTitle>
@@ -233,7 +287,10 @@ export default function TimeTrackingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {entries.filter((e) => e.status === 'Approved').reduce((sum, e) => sum + e.hours, 0).toFixed(2)}
+              {entries.filter((e) => e.status === 'Approved').reduce((sum, e) => {
+                const hours = typeof e.hours === 'number' ? e.hours : Number(e.hours) || 0;
+                return sum + hours;
+              }, 0).toFixed(2)}
             </div>
           </CardContent>
         </Card>
@@ -279,9 +336,9 @@ export default function TimeTrackingPage() {
                     <TableCell>{formatDate(entry.date)}</TableCell>
                     <TableCell>{entry.user.name}</TableCell>
                     <TableCell>{entry.project?.name || '-'}</TableCell>
-                    <TableCell>{entry.hours}</TableCell>
-                    <TableCell>{entry.hourlyRate ? formatCurrency(entry.hourlyRate) : '-'}</TableCell>
-                    <TableCell>{entry.totalAmount ? formatCurrency(entry.totalAmount) : '-'}</TableCell>
+                    <TableCell>{typeof entry.hours === 'number' ? entry.hours : Number(entry.hours) || 0}</TableCell>
+                    <TableCell>{entry.hourlyRate ? formatCurrency(typeof entry.hourlyRate === 'number' ? entry.hourlyRate : Number(entry.hourlyRate)) : '-'}</TableCell>
+                    <TableCell>{entry.totalAmount ? formatCurrency(typeof entry.totalAmount === 'number' ? entry.totalAmount : Number(entry.totalAmount)) : '-'}</TableCell>
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded text-xs ${

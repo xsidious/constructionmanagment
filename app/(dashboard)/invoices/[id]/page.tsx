@@ -64,7 +64,43 @@ export default function InvoiceDetailPage() {
       const response = await fetch(`/api/invoices/${params.id}`);
       if (response.ok) {
         const data = await response.json();
-        setInvoice(data);
+        // Handle both wrapped and direct response
+        const invoiceData = data.data || data;
+        // Ensure all numeric fields are properly converted
+        if (invoiceData) {
+          invoiceData.subtotal = typeof invoiceData.subtotal === 'object' && invoiceData.subtotal?.toNumber 
+            ? invoiceData.subtotal.toNumber() 
+            : Number(invoiceData.subtotal || 0);
+          invoiceData.tax = typeof invoiceData.tax === 'object' && invoiceData.tax?.toNumber 
+            ? invoiceData.tax.toNumber() 
+            : Number(invoiceData.tax || 0);
+          invoiceData.discount = typeof invoiceData.discount === 'object' && invoiceData.discount?.toNumber 
+            ? invoiceData.discount.toNumber() 
+            : Number(invoiceData.discount || 0);
+          invoiceData.total = typeof invoiceData.total === 'object' && invoiceData.total?.toNumber 
+            ? invoiceData.total.toNumber() 
+            : Number(invoiceData.total || 0);
+          if (invoiceData.lineItems) {
+            invoiceData.lineItems = invoiceData.lineItems.map((item: any) => ({
+              ...item,
+              unitPrice: typeof item.unitPrice === 'object' && item.unitPrice?.toNumber 
+                ? item.unitPrice.toNumber() 
+                : Number(item.unitPrice || 0),
+              total: typeof item.total === 'object' && item.total?.toNumber 
+                ? item.total.toNumber() 
+                : Number(item.total || 0),
+            }));
+          }
+          if (invoiceData.payments) {
+            invoiceData.payments = invoiceData.payments.map((payment: any) => ({
+              ...payment,
+              amount: typeof payment.amount === 'object' && payment.amount?.toNumber 
+                ? payment.amount.toNumber() 
+                : Number(payment.amount || 0),
+            }));
+          }
+        }
+        setInvoice(invoiceData);
       }
     } catch (error) {
       console.error('Failed to fetch invoice:', error);
@@ -133,19 +169,19 @@ export default function InvoiceDetailPage() {
   const remaining = invoice.total - totalPaid;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={() => router.back()}>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <Button variant="ghost" onClick={() => router.back()} className="h-9 sm:h-10">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            <span className="hidden sm:inline">Back</span>
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold">{invoice.invoiceNumber}</h1>
-            <p className="text-muted-foreground">Invoice Details</p>
+          <div className="flex-1 sm:flex-initial">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">{invoice.invoiceNumber}</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">Invoice Details</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <Button variant="outline" onClick={() => window.open(`/api/invoices/${invoice.id}/pdf`, '_blank')}>
             <Download className="mr-2 h-4 w-4" />
             Download PDF
@@ -281,7 +317,7 @@ export default function InvoiceDetailPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Summary</CardTitle>

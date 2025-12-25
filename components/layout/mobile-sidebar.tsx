@@ -102,8 +102,8 @@ export function MobileSidebar() {
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0 overflow-y-auto">
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center border-b px-6 bg-gradient-to-r from-blue-600 to-indigo-600">
-            <Logo size="sm" showText={true} className="text-white" />
+          <div className="flex h-16 items-center border-b px-6 bg-white">
+            <Logo size="sm" showText={true} />
           </div>
           <nav className="flex-1 space-y-1 px-3 py-4">
             {filteredNavigation.map((item) => {

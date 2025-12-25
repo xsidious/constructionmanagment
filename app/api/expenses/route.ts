@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { requireApiContext } from '@/lib/api-helpers';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const expenseSchema = z.object({
   projectId: z.string().optional(),
   category: z.enum(['Materials', 'Labor', 'Equipment', 'Subcontractor', 'Travel', 'Utilities', 'Insurance', 'Other']),
@@ -40,7 +42,13 @@ export async function GET(req: NextRequest) {
       orderBy: { date: 'desc' },
     });
 
-    return NextResponse.json(expenses);
+    // Convert Decimal fields to numbers for JSON serialization
+    const expensesData = expenses.map(expense => ({
+      ...expense,
+      amount: typeof expense.amount === 'object' && expense.amount?.toNumber ? expense.amount.toNumber() : Number(expense.amount),
+    }));
+
+    return NextResponse.json(expensesData);
   } catch (error) {
     console.error('Error fetching expenses:', error);
     return NextResponse.json(
@@ -67,7 +75,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(expense, { status: 201 });
+    // Convert Decimal fields to numbers for JSON serialization
+    const expenseData = {
+      ...expense,
+      amount: typeof expense.amount === 'object' && expense.amount?.toNumber ? expense.amount.toNumber() : Number(expense.amount),
+    };
+
+    return NextResponse.json(expenseData, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

@@ -4,14 +4,17 @@ import { requireApiContext, apiError, apiSuccess, requireApiPermission } from '@
 import { z } from 'zod';
 import { ProjectStatus } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 const createProjectSchema = z.object({
-  customerId: z.string(),
+  customerName: z.string().optional(),
+  customerId: z.string().optional(),
   name: z.string().min(1),
   description: z.string().optional(),
   budget: z.number().positive().optional(),
   status: z.nativeEnum(ProjectStatus).default(ProjectStatus.Planning),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -66,23 +69,48 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = createProjectSchema.parse(body);
 
-    // Verify customer belongs to company
-    const customer = await prisma.customer.findFirst({
-      where: {
-        id: data.customerId,
-        companyId: session.companyId,
-      },
-    });
-
-    if (!customer) {
-      return apiError('Customer not found', 404);
+    // Find or create customer
+    let customer;
+    if (data.customerId) {
+      customer = await prisma.customer.findFirst({
+        where: {
+          id: data.customerId,
+          companyId: session.companyId,
+        },
+      });
+      if (!customer) {
+        return apiError('Customer not found', 404);
+      }
+    } else if (data.customerName) {
+      // Find or create customer by name
+      customer = await prisma.customer.findFirst({
+        where: {
+          name: data.customerName,
+          companyId: session.companyId,
+        },
+      });
+      
+      if (!customer) {
+        // Create new customer
+        customer = await prisma.customer.create({
+          data: {
+            name: data.customerName,
+            companyId: session.companyId,
+          },
+        });
+      }
+    } else {
+      return apiError('Customer name or ID is required', 400);
     }
 
     const project = await prisma.project.create({
       data: {
-        ...data,
-        companyId: session.companyId,
+        customerId: customer.id,
+        name: data.name,
+        description: data.description || null,
         budget: data.budget ? data.budget : null,
+        status: data.status,
+        companyId: session.companyId,
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
       },
