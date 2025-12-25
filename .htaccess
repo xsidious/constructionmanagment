@@ -1,0 +1,29 @@
+# .htaccess for cPanel Apache configuration
+# This file helps route requests to your Node.js application
+
+# Enable rewrite engine
+RewriteEngine On
+
+# Proxy requests to Node.js application
+# Replace PORT with your actual Node.js port from cPanel Node.js Selector
+# Example: RewriteRule ^(.*)$ http://localhost:3000/$1 [P,L]
+
+# Uncomment and update the port number:
+# RewriteRule ^(.*)$ http://localhost:PORT/$1 [P,L]
+
+# Alternative: If using subdomain, you might not need this
+# The Node.js Selector usually handles routing automatically
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Prevent access to sensitive files
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
