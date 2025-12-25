@@ -152,10 +152,12 @@ Use an FTP client like FileZilla:
 
 ```env
 # Database Connection
-DATABASE_URL="postgresql://cpaneluser_username:password@localhost:5432/cpaneluser_dbname"
-DIRECT_URL="postgresql://cpaneluser_username:password@localhost:5432/cpaneluser_dbname"
+# Example format: postgresql://username:password@host:port/database
+DATABASE_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
+DIRECT_URL="postgresql://eraba_eraba_constructiondb:eraba_eraba_constructiondb@localhost:5432/eraba_eraba_constructiondb"
 
 # NextAuth
+# Generate with: openssl rand -base64 32
 AUTH_SECRET="your-secret-key-here-generate-with-openssl-rand-base64-32"
 NEXTAUTH_URL="https://yourdomain.com"
 
@@ -166,6 +168,12 @@ NODE_ENV="production"
 UPLOAD_DIR="./uploads"
 MAX_FILE_SIZE="10485760"
 ```
+
+**Important Notes:**
+- Replace `localhost` with your actual database host if different
+- Replace `5432` with your actual PostgreSQL port if different
+- Replace `yourdomain.com` with your actual domain
+- Generate a secure `AUTH_SECRET` using: `openssl rand -base64 32`
 
 **Generate AUTH_SECRET:**
 ```bash
