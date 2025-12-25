@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Briefcase } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { NewJobDialog } from '@/components/dialogs/new-job-dialog';
 
 interface Job {
   id: string;
@@ -27,6 +28,7 @@ interface Job {
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchJobs();
@@ -77,11 +79,9 @@ export default function JobsPage() {
           <h1 className="text-3xl font-bold">Jobs</h1>
           <p className="text-muted-foreground">Manage work orders and tasks</p>
         </div>
-        <Button asChild>
-          <Link href="/jobs/new">
-            <Plus className="mr-2 h-4 w-4" />
-            New Job
-          </Link>
+        <Button onClick={() => setDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Job
         </Button>
       </div>
 
@@ -90,11 +90,9 @@ export default function JobsPage() {
           <CardContent className="py-10 text-center">
             <Briefcase className="mx-auto h-12 w-12 text-muted-foreground" />
             <p className="mt-4 text-muted-foreground">No jobs yet</p>
-            <Button asChild className="mt-4">
-              <Link href="/jobs/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Job
-              </Link>
+            <Button onClick={() => setDialogOpen(true)} className="mt-4">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Job
             </Button>
           </CardContent>
         </Card>
@@ -140,6 +138,13 @@ export default function JobsPage() {
           </Table>
         </Card>
       )}
+      <NewJobDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        onSuccess={() => {
+          fetchJobs();
+        }}
+      />
     </div>
   );
 }
