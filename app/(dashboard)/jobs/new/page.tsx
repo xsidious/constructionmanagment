@@ -72,7 +72,7 @@ export default function NewJobPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           projectId,
-          assignedToId: assignedToId || undefined,
+          assignedToId: assignedToId && assignedToId !== 'none' ? assignedToId : undefined,
           title,
           description: description || undefined,
           status,
