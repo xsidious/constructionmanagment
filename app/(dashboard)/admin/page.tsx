@@ -46,7 +46,7 @@ export default function AdminPage() {
     }
 
     fetchAdminData();
-  }, [session, router]);
+  }, [session]);
 
   const fetchAdminData = async () => {
     try {

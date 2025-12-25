@@ -56,7 +56,7 @@ export default function NewMaterialPage() {
           unitPrice: parseFloat(unitPrice),
           stockQuantity: parseFloat(stockQuantity || '0'),
           minStockLevel: minStockLevel ? parseFloat(minStockLevel) : undefined,
-          supplierId: supplierId || undefined,
+          supplierId: supplierId && supplierId !== 'none' ? supplierId : undefined,
         }),
       });
 
@@ -191,12 +191,12 @@ export default function NewMaterialPage() {
             {suppliers.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="supplierId">Supplier</Label>
-                <Select value={supplierId} onValueChange={setSupplierId}>
+                <Select value={supplierId || 'none'} onValueChange={(value) => setSupplierId(value === 'none' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a supplier (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {suppliers.map((supplier) => (
                       <SelectItem key={supplier.id} value={supplier.id}>
                         {supplier.name}

@@ -140,8 +140,8 @@ export default function NewInvoicePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerId,
-          projectId: projectId || undefined,
-          quoteId: quoteId || undefined,
+          projectId: projectId && projectId !== 'none' ? projectId : undefined,
+          quoteId: quoteId && quoteId !== 'none' ? quoteId : undefined,
           status,
           dueDate: dueDate || undefined,
           tax: parseFloat(tax || '0'),
@@ -211,12 +211,12 @@ export default function NewInvoicePage() {
 
               <div className="space-y-2">
                 <Label htmlFor="quoteId">Quote (Optional)</Label>
-                <Select value={quoteId} onValueChange={setQuoteId} disabled={!customerId}>
+                <Select value={quoteId || 'none'} onValueChange={(value) => setQuoteId(value === 'none' ? '' : value)} disabled={!customerId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a quote (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {quotes.map((quote) => (
                       <SelectItem key={quote.id} value={quote.id}>
                         {quote.quoteNumber}
@@ -228,12 +228,12 @@ export default function NewInvoicePage() {
 
               <div className="space-y-2">
                 <Label htmlFor="projectId">Project</Label>
-                <Select value={projectId} onValueChange={setProjectId} disabled={!customerId}>
+                <Select value={projectId || 'none'} onValueChange={(value) => setProjectId(value === 'none' ? '' : value)} disabled={!customerId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a project (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {projects.map((project) => (
                       <SelectItem key={project.id} value={project.id}>
                         {project.name}

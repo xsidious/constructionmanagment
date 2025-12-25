@@ -50,7 +50,7 @@ export default function NewExpensePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          projectId: projectId || undefined,
+          projectId: projectId && projectId !== 'none' ? projectId : undefined,
           category,
           amount: parseFloat(amount),
           description,
@@ -98,12 +98,12 @@ export default function NewExpensePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="projectId">Project</Label>
-                <Select value={projectId} onValueChange={setProjectId}>
+                <Select value={projectId || 'none'} onValueChange={(value) => setProjectId(value === 'none' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a project (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {projects.map((project) => (
                       <SelectItem key={project.id} value={project.id}>
                         {project.name}

@@ -67,8 +67,8 @@ export default function NewTimeEntryPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          projectId: projectId || undefined,
-          jobId: jobId || undefined,
+          projectId: projectId && projectId !== 'none' ? projectId : undefined,
+          jobId: jobId && jobId !== 'none' ? jobId : undefined,
           date,
           hours: parseFloat(hours),
           description: description || undefined,
@@ -114,12 +114,12 @@ export default function NewTimeEntryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="projectId">Project</Label>
-                <Select value={projectId} onValueChange={setProjectId}>
+                <Select value={projectId || 'none'} onValueChange={(value) => setProjectId(value === 'none' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a project (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {projects.map((project) => (
                       <SelectItem key={project.id} value={project.id}>
                         {project.name}
@@ -131,12 +131,12 @@ export default function NewTimeEntryPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="jobId">Job</Label>
-                <Select value={jobId} onValueChange={setJobId} disabled={!projectId}>
+                <Select value={jobId || 'none'} onValueChange={(value) => setJobId(value === 'none' ? '' : value)} disabled={!projectId || projectId === 'none'}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a job (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {jobs.map((job) => (
                       <SelectItem key={job.id} value={job.id}>
                         {job.title}

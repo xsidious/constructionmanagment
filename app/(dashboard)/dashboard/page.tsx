@@ -34,16 +34,16 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!session) return;
+    
     // Redirect clients to client portal
-    if (session?.role === 'Client') {
+    if (session.role === 'Client') {
       router.push('/client');
       return;
     }
     
-    if (session) {
-      fetchDashboardData();
-    }
-  }, [session, router]);
+    fetchDashboardData();
+  }, [session]);
 
   const fetchDashboardData = async () => {
     try {

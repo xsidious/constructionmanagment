@@ -47,9 +47,17 @@ export default function NewJobPage() {
       .catch(console.error);
     
     // Fetch company members for assignment
-    fetch('/api/companies/current/members')
+    fetch('/api/companies')
       .then((res) => res.json())
-      .then((data) => setUsers(data))
+      .then(async (companies) => {
+        if (companies && companies.length > 0 && companies[0].id) {
+          const membersRes = await fetch(`/api/companies/${companies[0].id}/members`);
+          if (membersRes.ok) {
+            const membersData = await membersRes.json();
+            setUsers(membersData.map((m: any) => m.user || m).filter((u: any) => u && u.id));
+          }
+        }
+      })
       .catch(() => setUsers([])); // If endpoint doesn't exist, continue without users
   }, []);
 
@@ -179,12 +187,12 @@ export default function NewJobPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="assignedToId">Assign To</Label>
-                <Select value={assignedToId} onValueChange={setAssignedToId}>
+                <Select value={assignedToId || 'none'} onValueChange={(value) => setAssignedToId(value === 'none' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a team member (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="none">Unassigned</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.name} ({user.email})
